@@ -1,24 +1,67 @@
 import React from "react";
-import { Box, CssBaseline, Toolbar, Container } from "@mui/material";
-import SideMenu from "../components/SideMenu.tsx";
-import Header from "../components/Header.tsx";
-import AppNavbar from "../components/AppNavbar.tsx";
-import MainGrid from "../components/MainGrid.tsx";
+import { Box, Typography, Card, CardContent, Grid } from "@mui/material";
+import SalesChart from "../components/data/SalesChart";
 
 const DashboardPage: React.FC = () => {
   return (
-    <Box sx={{ display: "flex", height: "100vh" }}>
-      <CssBaseline />
-      <Header />
-      <SideMenu />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        <AppNavbar />
-        <Container>
-          <MainGrid />
-        </Container>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <Box width="100%">
+        <Typography variant="h4" gutterBottom textAlign="center">
+          Welcome, User!
+        </Typography>
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} md={6} lg={4}>
+            <Card sx={{ backgroundColor: "#1e1e1e", borderRadius: "12px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ color: "#4caf50" }}>
+                  💰 200k
+                </Typography>
+                <Typography variant="body1">Revenue Last 30 days</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <Card sx={{ backgroundColor: "#1e1e1e", borderRadius: "12px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ color: "#2196f3" }}>
+                  👥 14K
+                </Typography>
+                <Typography variant="body1">Users Last 30 days</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <Card sx={{ backgroundColor: "#1e1e1e", borderRadius: "12px" }}>
+              <CardContent>
+                <Typography variant="h6" sx={{ color: "#ff9800" }}>
+                  🔗 325
+                </Typography>
+                <Typography variant="body1">
+                  Connections Last 30 days
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card
+              sx={{
+                backgroundColor: "#1e1e1e",
+                borderRadius: "12px",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" gutterBottom textAlign="center">
+                  Sales Overview
+                </Typography>
+                <SalesChart />
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
       </Box>
-    </Box>
+    </div>
   );
 };
 
