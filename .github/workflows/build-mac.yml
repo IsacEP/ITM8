@@ -1,0 +1,33 @@
+name: Build Mac
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  buildMac:
+    runs-on: macos-latest
+    steps:
+      # 1) Check out your repo code
+      - uses: actions/checkout@v3
+
+      # 2) Install Node
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # or another version if you prefer
+
+      # 3) Install dependencies
+      - name: Install deps
+        run: npm install
+
+      # 4) Build the app, including electron-builder
+      - name: Build
+        run: npm run build:electron
+
+      # 5) [Optional] Upload the resulting DMG as an artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Mac-dmg
+          path: release/*.dmg  # or release/*.pkg or anything relevant
