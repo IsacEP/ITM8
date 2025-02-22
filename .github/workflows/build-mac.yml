@@ -10,16 +10,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install system dependencies
+        run: brew install xz
+
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --legacy-peer-deps
         working-directory: frontend
 
-      - name: Build
+      - name: Build Electron app
         run: npm run build:electron
         working-directory: frontend
 
