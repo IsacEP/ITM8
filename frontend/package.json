@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "main": "dist/electron/electron.js",
+  "main": "dist/electron/electron.cjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npm run copy-electron",
