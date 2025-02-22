@@ -152,6 +152,16 @@ const OpportunityScoringTool: React.FC = () => {
           {/* Weight Inputs */}
           <Grid item xs={2.5} sm={2.5}>
             <TextField
+              label="Budget Weight"
+              type="number"
+              fullWidth
+              value={budgetWeight || ""} // Allow empty input
+              onChange={(e) => setBudgetWeight(parseFloat(e.target.value))}
+              inputProps={{ step: "any", disableScroll: true }} // Disable scroll/arrows
+            />
+          </Grid>
+          <Grid item xs={2.5} sm={2.5}>
+            <TextField
               label="Likelihood Weight"
               type="number"
               fullWidth

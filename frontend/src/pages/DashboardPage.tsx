@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Card, CardContent, Grid } from "@mui/material";
-import SalesChart from "../components/data/SalesChart";
+import SalesChart from "../components/data/testChart";
 
 const DashboardPage: React.FC = () => {
   return (
