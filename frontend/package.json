@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:electron": "npm run build && electron ./dist/electron/electron.cjs",
-    "build:electron": "electron-builder"
+    "build:electron": "npm run copy-electron && electron-builder"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
