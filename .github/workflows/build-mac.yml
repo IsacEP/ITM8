@@ -31,3 +31,4 @@ jobs:
         with:
           name: Mac-dmg
           path: frontend/release/*.dmg
+    retries: 3
