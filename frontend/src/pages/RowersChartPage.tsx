@@ -17,6 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import PageLayout from "../components/PageLayout";
 
 type RowerData = {
   name: string;
@@ -75,84 +76,92 @@ const RowersChartPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex", // Use flexbox for centering
-        flexDirection: "column", // Stack children vertically
-        alignItems: "center", // Center children horizontally
-        p: 0, // Remove default padding
-        m: 0, // Remove default margin
-      }}
-    >
-      <Typography variant="h4" gutterBottom sx={{ textAlign: "center", mb: 4 }}>
-        ROWERS Opportunity Qualification Chart
-      </Typography>
-
-      {/* Input Section - Horizontal Layout */}
-      <Grid
-        container
-        spacing={3}
-        justifyContent="center"
-        alignItems="center"
-        sx={{ width: "100%", mb: 4, flexWrap: "wrap", p: 0 }}
-      >
-        {rowersData.map((rower, index) => (
-          <Grid item key={index} sx={{ flex: "0 0 auto", minWidth: 200 }}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  {rower.name}
-                </Typography>
-                <TextField
-                  fullWidth
-                  label="Value (1-5)"
-                  type="number"
-                  inputProps={{ min: 1, max: 5 }}
-                  value={rower.value}
-                  onChange={(e) =>
-                    handleInputChange(index, parseInt(e.target.value, 10))
-                  }
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Bar Chart Section */}
-      <Paper
-        elevation={3}
+    <PageLayout title="ROWERS Opportunity Qualification Chart">
+      <Box
         sx={{
           width: "100%",
-          p: 0,
-          m: 4, // Remove default margin
+          display: "flex", // Use flexbox for centering
+          flexDirection: "column", // Stack children vertically
+          alignItems: "center", // Center children horizontally
+          p: 0, // Remove default padding
+          m: 0, // Remove default margin
         }}
       >
+        {/*
         <Typography
-          variant="h6"
+          variant="h4"
           gutterBottom
-          sx={{ textAlign: "center" }}
-          p="20px"
+          sx={{ textAlign: "center", mb: 4 }}
         >
-          ROWERS Bar Chart
+          ROWERS Opportunity Qualification Chart
         </Typography>
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart data={rowersData}>
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} />
-            <Tooltip />
-            <Legend />
-            <Bar
-              dataKey="value"
-              name="ROWERS Score"
-              shape={<CustomBarShape />}
-              animationDuration={0}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </Paper>
-    </Box>
+        */}
+
+        {/* Input Section - Horizontal Layout */}
+        <Grid
+          container
+          spacing={3}
+          justifyContent="center"
+          alignItems="center"
+          sx={{ width: "100%", mb: 4, flexWrap: "wrap", p: 0 }}
+        >
+          {rowersData.map((rower, index) => (
+            <Grid item key={index} sx={{ flex: "0 0 auto", minWidth: 200 }}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" sx={{ mb: 2 }}>
+                    {rower.name}
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    label="Value (1-5)"
+                    type="number"
+                    inputProps={{ min: 1, max: 5 }}
+                    value={rower.value}
+                    onChange={(e) =>
+                      handleInputChange(index, parseInt(e.target.value, 10))
+                    }
+                  />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+
+        {/* Bar Chart Section */}
+        <Paper
+          elevation={3}
+          sx={{
+            width: "100%",
+            p: 0,
+            m: 4, // Remove default margin
+          }}
+        >
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ textAlign: "center" }}
+            p="20px"
+          >
+            ROWERS Bar Chart
+          </Typography>
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart data={rowersData}>
+              <XAxis dataKey="name" />
+              <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} />
+              <Tooltip />
+              <Legend />
+              <Bar
+                dataKey="value"
+                name="ROWERS Score"
+                shape={<CustomBarShape />}
+                animationDuration={0}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </Paper>
+      </Box>
+    </PageLayout>
   );
 };
 
