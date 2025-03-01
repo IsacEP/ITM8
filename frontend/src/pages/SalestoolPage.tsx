@@ -18,7 +18,6 @@ const SalesToolPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  // Define the tools to display
   const tools = [
     {
       title: "Opportunity Scoring Tool",
@@ -30,7 +29,7 @@ const SalesToolPage: React.FC = () => {
     {
       title: "Sales Prediction Tool",
       description:
-        "Predict future sales based on historical data using linear regression. This prediction is based on the asumption that sales data is linear.",
+        "Predict future sales based on historical data using linear regression. This prediction is based on the assumption that sales data is linear.",
       component: <SalesPredictionTool />,
       color: theme.palette.secondary.main,
     },
@@ -38,21 +37,11 @@ const SalesToolPage: React.FC = () => {
 
   return (
     <PageLayout title="Sales Tools">
-      <Box width="100%" sx={{ p: 3 }}>
-        {/* 
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ textAlign: "center", mb: 4 }}
-        >
-          Sales Tools
-        </Typography>
-        */}
-
-        {/* Tool Grid */}
-        <Grid container spacing={3} justifyContent="center">
+      <Box sx={{ p: 3, width: "100%" }}>
+        {/* Use a Grid container with spacing and stretching items */}
+        <Grid container spacing={4} alignItems="stretch">
           {tools.map((tool, index) => (
-            <Grid item xs={12} sm={6} md={6} key={index} margin={"5px"}>
+            <Grid item xs={12} sm={6} key={index}>
               <Card
                 sx={{
                   height: "100%",
@@ -61,7 +50,9 @@ const SalesToolPage: React.FC = () => {
                   borderLeft: `6px solid ${tool.color}`,
                 }}
               >
-                <CardContent>
+                <CardContent
+                  sx={{ flex: 1, display: "flex", flexDirection: "column" }}
+                >
                   <Typography
                     variant="h5"
                     sx={{ color: tool.color, fontWeight: "bold", mb: 2 }}
@@ -72,15 +63,15 @@ const SalesToolPage: React.FC = () => {
                     {tool.description}
                   </Typography>
                   <Divider sx={{ my: 2 }} />
-                  {/* Render the tool component */}
-                  {tool.component}
+                  {/* Render the tool component in a flex-grow container */}
+                  <Box sx={{ flexGrow: 1 }}>{tool.component}</Box>
                 </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
 
-        {/* Centered Button (Optional) */}
+        {/* Centered Button */}
         <Box
           sx={{
             display: "flex",
@@ -90,7 +81,7 @@ const SalesToolPage: React.FC = () => {
         >
           <Button
             variant="contained"
-            onClick={() => navigate("/")} // Navigate to home or another page
+            onClick={() => navigate("/")}
             sx={{
               fontSize: "1.2rem",
               padding: "10px 20px",

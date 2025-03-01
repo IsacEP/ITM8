@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   TextField,
+  Button,
 } from "@mui/material";
 import {
   BarChart,
@@ -18,6 +19,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import PageLayout from "../components/PageLayout";
+import html2canvas from "html2canvas";
 
 type RowerData = {
   name: string;
@@ -75,38 +77,49 @@ const RowersChartPage: React.FC = () => {
     );
   };
 
+  // Create a ref for the chart container
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  // Handler for the "Extract Chart" button
+  const handleExtractChart = async () => {
+    if (chartRef.current) {
+      try {
+        const canvas = await html2canvas(chartRef.current, {
+          backgroundColor: "#fff", // optional: set background color if needed
+        });
+        // Convert the canvas to a data URL and create a link to download
+        const link = document.createElement("a");
+        link.download = "rowers-chart.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      } catch (error) {
+        console.error("Error capturing chart:", error);
+      }
+    }
+  };
+
   return (
     <PageLayout title="ROWERS Opportunity Qualification Chart">
       <Box
         sx={{
           width: "100%",
-          display: "flex", // Use flexbox for centering
-          flexDirection: "column", // Stack children vertically
-          alignItems: "center", // Center children horizontally
-          p: 0, // Remove default padding
-          m: 0, // Remove default margin
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          p: 0,
+          m: 0,
         }}
       >
-        {/*
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ textAlign: "center", mb: 4 }}
-        >
-          ROWERS Opportunity Qualification Chart
-        </Typography>
-        */}
-
-        {/* Input Section - Horizontal Layout */}
+        {/* Input Section - Two Rows of 3 Boxes Each */}
         <Grid
           container
           spacing={3}
           justifyContent="center"
           alignItems="center"
-          sx={{ width: "100%", mb: 4, flexWrap: "wrap", p: 0 }}
+          sx={{ width: "100%", mb: 4, p: 0 }}
         >
           {rowersData.map((rower, index) => (
-            <Grid item key={index} sx={{ flex: "0 0 auto", minWidth: 200 }}>
+            <Grid item xs={12} sm={4} key={index}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" sx={{ mb: 2 }}>
@@ -128,13 +141,13 @@ const RowersChartPage: React.FC = () => {
           ))}
         </Grid>
 
-        {/* Bar Chart Section */}
+        {/* Chart Section with ref */}
         <Paper
           elevation={3}
           sx={{
             width: "100%",
             p: 0,
-            m: 4, // Remove default margin
+            m: 4,
           }}
         >
           <Typography
@@ -145,21 +158,32 @@ const RowersChartPage: React.FC = () => {
           >
             ROWERS Bar Chart
           </Typography>
-          <ResponsiveContainer width="100%" height={400}>
-            <BarChart data={rowersData}>
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="value"
-                name="ROWERS Score"
-                shape={<CustomBarShape />}
-                animationDuration={0}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <Box ref={chartRef}>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={rowersData}>
+                <XAxis dataKey="name" />
+                <YAxis domain={[0, 5]} ticks={[1, 2, 3, 4, 5]} />
+                <Tooltip />
+                <Legend />
+                <Bar
+                  dataKey="value"
+                  name="ROWERS Score"
+                  shape={<CustomBarShape />}
+                  animationDuration={0}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
         </Paper>
+
+        {/* "Extract Chart" Button */}
+        <Button
+          variant="contained"
+          onClick={handleExtractChart}
+          sx={{ mt: 4, mb: 8, backgroundColor: "rgb(0, 123, 255)" }}
+        >
+          Extract Chart
+        </Button>
       </Box>
     </PageLayout>
   );

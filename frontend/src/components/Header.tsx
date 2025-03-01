@@ -1,16 +1,48 @@
 // src/components/Header.tsx
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const tools = [
+    { label: "Pipeline Tool", path: "/PipelinePage" },
+    { label: "Rowers Overview", path: "/RowersPage" },
+    { label: "Rowers Chart", path: "/RowersChartPage" },
+    { label: "Sales Tool", path: "/SalestoolPage" },
+    { label: "Win Room", path: "/WinRoomPage" },
+  ];
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <AppBar
       position="fixed"
-      sx={{ backgroundColor: "white", boxShadow: "none", position: "relative" }}
+      sx={{
+        backgroundColor: "white",
+        boxShadow: "none",
+        position: "relative",
+        borderBottom: "3px solid rgb(95,37,159)",
+        paddingBottom: "5px",
+      }}
     >
       <Toolbar
         sx={{
@@ -27,7 +59,7 @@ const Header: React.FC = () => {
 
         {/* Center: Title (Completely centered on the screen) */}
         <Typography
-          variant="h6"
+          variant="h4"
           component="div"
           sx={{
             color: "rgb(95,37,159)",
@@ -49,13 +81,35 @@ const Header: React.FC = () => {
           >
             HomePage
           </Button>
+
+          {/* Dropdown (replacing old Information button) */}
           <Button
             variant="contained"
             sx={{ backgroundColor: "rgb(95,37,159)" }}
-            onClick={() => alert("Information button clicked")}
+            onClick={handleMenuOpen}
           >
-            Information
+            Tools
           </Button>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleMenuClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            {tools.map((tool) => (
+              <MenuItem
+                key={tool.path}
+                onClick={() => {
+                  navigate(tool.path);
+                  handleMenuClose();
+                }}
+              >
+                {tool.label}
+              </MenuItem>
+            ))}
+          </Menu>
+
           <Button
             variant="contained"
             sx={{ backgroundColor: "rgb(95,37,159)" }}
@@ -66,9 +120,7 @@ const Header: React.FC = () => {
           <Button
             variant="contained"
             sx={{ backgroundColor: "rgb(95,37,159)" }}
-            onClick={() => {
-              /* Logout functionality (not implemented yet) */
-            }}
+            onClick={() => {}}
           >
             Logout
           </Button>

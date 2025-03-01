@@ -10,12 +10,12 @@ import {
 } from "@mui/material";
 import PageLayout from "../components/PageLayout";
 
+const formatNumber = (num: number) => {
+  return num.toLocaleString("en-US").replace(/,/g, " ");
+};
+
 const PipelinePage: React.FC = () => {
-  /*
-   * Currently using local storage for all data instead of the django backend
-   * In a production environment we would create a new model, new routes,
-   * and store all the data in the backend instead. But this works now.
-   */
+  // State initialization from localStorage
   const [budget, setBudget] = useState<number>(
     Number(localStorage.getItem("budget")) || 0
   );
@@ -50,7 +50,6 @@ const PipelinePage: React.FC = () => {
     Number(localStorage.getItem("closeRevenue")) || 0
   );
 
-  // Save data to localStorage when inputs change
   useEffect(() => {
     localStorage.setItem("budget", String(budget));
     localStorage.setItem("sellCycleLength", String(sellCycleLength));
@@ -88,51 +87,44 @@ const PipelinePage: React.FC = () => {
     calculateYield(presentRevenue, 90) +
     calculateYield(closeRevenue, 100);
 
-  const projectedYield = (totalYield / sellCycleLength) * monthsLeft;
+  const projectedYield =
+    sellCycleLength !== 0 ? (totalYield / sellCycleLength) * monthsLeft : 0;
   const gap = budget - projectedYield - yearToDateAttainment;
-  const additionalLeads = (gap / avgOpportunitySize) * 10;
+  const additionalLeads =
+    avgOpportunitySize !== 0 ? (gap / avgOpportunitySize) * 10 : 0;
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    setValue: (value: number) => void
+  ) => {
+    const rawValue = event.target.value.replace(/\s/g, "");
+    const numericValue = Number(rawValue) || 0;
+    setValue(numericValue);
+  };
 
   return (
     <PageLayout title="Pipeline Volume Assessment Tool">
       <Box
-        width="100%"
         sx={{
-          pl: 3,
-          pr: 3,
+          pl: 4,
+          pr: 4,
           justifyContent: "center",
           display: "flex",
           flexDirection: "row",
           position: "relative",
-          pt: 8,
         }}
       >
-        {/*
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{
-            color: "#9900cc",
-            position: "absolute", // Absolute positioning to place it above everything else
-            top: 0, // Align it at the top of the Box
-            left: "50%", // Horizontally center
-            transform: "translateX(-50%)", // Correct centering by shifting half its width
-            zIndex: 10, // Make sure the text stays on top of other content
-          }}
-        >
-          ITM8 - Pipeline Volume Assessment Tool
-        </Typography>
-        */}
         <Grid
           container
-          spacing={3}
+          spacing={4}
           justifyContent="center"
           display="flex"
           flexDirection="row"
         >
           {/* Inputs Section */}
-          <Grid item xs={3}>
-            <Paper elevation={3} sx={{ p: 2, pb: 5 }}>
-              <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
+          <Grid item xs={12} md={4}>
+            <Paper elevation={3} sx={{ p: 4, pb: 6 }}>
+              <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
                 Pipeline Metrics
               </Typography>
               {[
@@ -162,28 +154,28 @@ const PipelinePage: React.FC = () => {
                   key={index}
                   fullWidth
                   label={input.label}
-                  type="number"
-                  value={input.value || ""}
-                  onChange={(e) => input.setValue(Number(e.target.value))}
+                  type="text"
+                  value={input.value ? formatNumber(input.value) : ""}
+                  onChange={(e) => handleInputChange(e, input.setValue)}
                   inputProps={{
                     inputMode: "numeric",
                     pattern: "[0-9]*",
                     step: 1,
                   }}
-                  sx={{ mb: 2 }}
+                  sx={{ mb: 3, fontSize: "1.2rem" }}
                 />
               ))}
             </Paper>
           </Grid>
 
           {/* Step Completed Section */}
-          <Grid item xs={8}>
+          <Grid item xs={12} md={8}>
             <Paper elevation={3} sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h5" gutterBottom>
                 Revenue in Pipeline Sections
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={4}>
                   {[
                     {
                       label: "IDENTIFY",
@@ -204,32 +196,40 @@ const PipelinePage: React.FC = () => {
                       percentage: 50,
                     },
                   ].map((step, index) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                      <Typography variant="subtitle1">{step.label}</Typography>
+                    <Box key={index} sx={{ mb: 3 }}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontSize: "1.1rem" }}
+                      >
+                        {step.label}
+                      </Typography>
                       <TextField
                         fullWidth
                         label="Revenue"
-                        type="number"
-                        value={step.value || ""}
-                        onChange={(e) => step.setValue(Number(e.target.value))}
+                        type="text"
+                        value={step.value ? formatNumber(step.value) : ""}
+                        onChange={(e) => handleInputChange(e, step.setValue)}
                         inputProps={{
                           inputMode: "numeric",
                           pattern: "[0-9]*",
                           step: 1,
                         }}
+                        sx={{ mb: 1, fontSize: "1.1rem" }}
                       />
-                      <Typography variant="body2" sx={{ mt: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 1, fontSize: "1.1rem" }}
+                      >
                         Yield:{" "}
-                        {calculateYield(
-                          step.value,
-                          step.percentage
-                        ).toLocaleString()}{" "}
+                        {calculateYield(step.value, step.percentage)
+                          .toLocaleString("en-US")
+                          .replace(/,/g, " ")}{" "}
                         SEK ({step.percentage}%)
                       </Typography>
                     </Box>
                   ))}
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12} md={4}>
                   {[
                     {
                       label: "PROVE",
@@ -250,26 +250,34 @@ const PipelinePage: React.FC = () => {
                       percentage: 100,
                     },
                   ].map((step, index) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                      <Typography variant="subtitle1">{step.label}</Typography>
+                    <Box key={index} sx={{ mb: 3 }}>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{ fontSize: "1.1rem" }}
+                      >
+                        {step.label}
+                      </Typography>
                       <TextField
                         fullWidth
                         label="Revenue"
-                        type="number"
-                        value={step.value || ""}
-                        onChange={(e) => step.setValue(Number(e.target.value))}
+                        type="text"
+                        value={step.value ? formatNumber(step.value) : ""}
+                        onChange={(e) => handleInputChange(e, step.setValue)}
                         inputProps={{
                           inputMode: "numeric",
                           pattern: "[0-9]*",
                           step: 1,
                         }}
+                        sx={{ mb: 1, fontSize: "1.1rem" }}
                       />
-                      <Typography variant="body2" sx={{ mt: 1 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ mt: 1, fontSize: "1.1rem" }}
+                      >
                         Yield:{" "}
-                        {calculateYield(
-                          step.value,
-                          step.percentage
-                        ).toLocaleString()}{" "}
+                        {calculateYield(step.value, step.percentage)
+                          .toLocaleString("en-US")
+                          .replace(/,/g, " ")}{" "}
                         SEK ({step.percentage}%)
                       </Typography>
                     </Box>
@@ -280,9 +288,9 @@ const PipelinePage: React.FC = () => {
           </Grid>
 
           {/* Results Section */}
-          <Grid item xs={11}>
-            <Paper elevation={3} sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
+          <Grid item xs={12}>
+            <Paper elevation={3} sx={{ p: 4 }}>
+              <Typography variant="h5" gutterBottom>
                 Results
               </Typography>
               {[
@@ -303,11 +311,14 @@ const PipelinePage: React.FC = () => {
                   unit: "PCS",
                 },
               ].map((result, index) => (
-                <Card key={index} sx={{ mb: 1, p: 1, height: "55px" }}>
+                <Card key={index} sx={{ mb: 2, p: 2, minHeight: "70px" }}>
                   <CardContent sx={{ p: 1 }}>
-                    <Typography variant="subtitle2">{result.label}</Typography>
-                    <Typography variant="h6">
-                      {result.value.toLocaleString()} {result.unit}
+                    <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
+                      {result.label}
+                    </Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "" }}>
+                      {result.value.toLocaleString("en-US").replace(/,/g, " ")}{" "}
+                      {result.unit}
                     </Typography>
                   </CardContent>
                 </Card>
