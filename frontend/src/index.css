@@ -84,3 +84,19 @@ button:focus-visible {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
 }
+
+/* New Stylings */
+
+.tiptap-editor {
+  min-height: 300px;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 5px;
+}
+
+.tiptap-menu {
+  background-color: white;
+  padding: 5px;
+  border: 1px solid black;
+  display: inline-block;
+}

@@ -1,4 +1,3 @@
-// src/components/Header.tsx
 import React from "react";
 import {
   AppBar,
@@ -11,9 +10,11 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import { useAuth } from "../services/AuthContext";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -24,6 +25,7 @@ const Header: React.FC = () => {
     { label: "Rowers Chart", path: "/RowersChartPage" },
     { label: "Sales Tool", path: "/SalestoolPage" },
     { label: "Win Room", path: "/WinRoomPage" },
+    { label: "Canvas", path: "/CanvasPage" },
   ];
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -113,14 +115,17 @@ const Header: React.FC = () => {
           <Button
             variant="contained"
             sx={{ backgroundColor: "rgb(95,37,159)" }}
-            onClick={() => navigate("/settings")}
+            onClick={() => navigate("/information")}
           >
-            Settings
+            Information
           </Button>
           <Button
             variant="contained"
             sx={{ backgroundColor: "rgb(95,37,159)" }}
-            onClick={() => {}}
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
           >
             Logout
           </Button>

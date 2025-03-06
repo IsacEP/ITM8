@@ -12,6 +12,7 @@ const HomePage: React.FC = () => {
     { title: "Rowers Chart", path: "/RowersChartPage" },
     { title: "Sales Tool", path: "/SalestoolPage" },
     { title: "Win Room", path: "/WinRoomPage" },
+    { title: "Canvas", path: "/CanvasPage" },
   ];
 
   return (

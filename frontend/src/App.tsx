@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./services/AuthContext";
+import PrivateRoute from "./utils/PrivateRoute";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import PipelinePage from "./pages/PipelinePage";
@@ -7,8 +9,10 @@ import RowersPage from "./pages/RowersPage";
 import RowersChartPage from "./pages/RowersChartPage";
 import SalesToolPage from "./pages/SalestoolPage";
 import WinRoomPage from "./pages/WinRoomPage";
-import SettingsPage from "./pages/SettingsPage";
+import CanvasPage from "./pages/CanvasPage";
+import InformationPage from "./pages/InformationPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import LoginPage from "./pages/LoginPage";
 
 // Theme for the Rowers page (if needed)
 const Rowertheme = createTheme({
@@ -36,27 +40,34 @@ const Rowertheme = createTheme({
 
 const App: React.FC = () => {
   return (
-    <Router basename="/ITM8">
-      {/* Header is always rendered */}
-      <Header />
-      <Routes>
-        {/* New HomePage */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/PipelinePage" element={<PipelinePage />} />
-        <Route
-          path="/RowersPage"
-          element={
-            <ThemeProvider theme={Rowertheme}>
-              <RowersPage />
-            </ThemeProvider>
-          }
-        />
-        <Route path="/RowersChartPage" element={<RowersChartPage />} />
-        <Route path="/SalestoolPage" element={<SalesToolPage />} />
-        <Route path="/WinRoomPage" element={<WinRoomPage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router basename="/ITM8">
+        <Header />
+        <Routes>
+          {/* Login Route (Public) */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Private Routes */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/PipelinePage" element={<PipelinePage />} />
+            <Route
+              path="/RowersPage"
+              element={
+                <ThemeProvider theme={Rowertheme}>
+                  <RowersPage />
+                </ThemeProvider>
+              }
+            />
+            <Route path="/RowersChartPage" element={<RowersChartPage />} />
+            <Route path="/SalestoolPage" element={<SalesToolPage />} />
+            <Route path="/WinRoomPage" element={<WinRoomPage />} />
+            <Route path="/CanvasPage" element={<CanvasPage />} />
+            <Route path="/information" element={<InformationPage />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 };
 
