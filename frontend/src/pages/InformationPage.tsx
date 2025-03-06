@@ -106,7 +106,8 @@ const InformationPage: React.FC = () => {
             flexible.
           </Typography>
           <Typography variant="body1" paragraph>
-            The architecture follows a modular approach:
+            The architecture follows a modular approach with the following
+            concepts:
           </Typography>
           <List>
             <ListItem>
