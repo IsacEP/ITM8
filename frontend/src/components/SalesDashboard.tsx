@@ -241,14 +241,13 @@ const SalesDashboard: React.FC = () => {
                         label={letter}
                         type="number"
                         inputProps={{ min: 0, max: 5 }}
-                        value={rower.rowersValues?.[markIndex] || 0} // Fallback to 0 if undefined
-                        onChange={
-                          (e) =>
-                            handleRowersValueChange(
-                              index,
-                              markIndex,
-                              parseInt(e.target.value, 10)
-                            ) // Added missing parenthesis here
+                        value={rower.rowersValues?.[markIndex] || 0}
+                        onChange={(e) =>
+                          handleRowersValueChange(
+                            index,
+                            markIndex,
+                            parseInt(e.target.value, 10)
+                          )
                         }
                         sx={{
                           width: "100px",
