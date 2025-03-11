@@ -21,7 +21,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({ title, children }) => {
       <Typography variant="h4" sx={{ mb: 3, color: "rgb(95,37,159)" }}>
         {title}
       </Typography>
-      <Box>{children}</Box>
+      {children}
     </Container>
   );
 };

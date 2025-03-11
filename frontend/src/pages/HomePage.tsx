@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Grid, Paper, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/PageLayout";
-import CompanySelector from "../components/CompanySelector";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -49,6 +48,12 @@ const HomePage: React.FC = () => {
       path: "/FlowPage",
       description:
         "Design and analyze flow charts to outline and optimize workflows for improved efficiency.",
+    },
+    {
+      title: "Staleholder Heat Map",
+      path: "/StakeholderPage",
+      description:
+        "Visualize stakeholder support and influence to prioritize relationships.",
     },
   ];
 

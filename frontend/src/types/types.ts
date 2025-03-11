@@ -11,3 +11,9 @@ export type DiamondNodeType = Node<CustomNodeData, "diamond">;
 
 // Union type for all custom nodes.
 export type CustomNode = EditableNodeType | CircleNodeType | DiamondNodeType;
+
+export interface Stakeholder {
+  name: string;
+  x: number;
+  y: number;
+}

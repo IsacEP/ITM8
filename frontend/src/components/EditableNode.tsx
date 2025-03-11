@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Handle, NodeProps, Position } from "@xyflow/react";
 import { Box, TextField } from "@mui/material";
-import { EditableNodeType } from "../types/FlowTypes";
+import { EditableNodeType } from "../types/types";
 
 const EditableNode: React.FC<NodeProps<EditableNodeType>> = ({
   data,

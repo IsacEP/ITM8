@@ -27,6 +27,7 @@ const Header: React.FC = () => {
     { label: "Win Room", path: "/WinRoomPage" },
     { label: "Canvas", path: "/CanvasPage" },
     { label: "Flow Chart", path: "/FlowPage" },
+    { label: "Stakeholder", path: "/StakeholderPage" },
   ];
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {

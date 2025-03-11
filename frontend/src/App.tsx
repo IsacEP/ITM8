@@ -10,6 +10,7 @@ import RowersChartPage from "./pages/RowersChartPage";
 import SalesToolPage from "./pages/SalestoolPage";
 import WinRoomPage from "./pages/WinRoomPage";
 import CanvasPage from "./pages/CanvasPage";
+import StakeHolderPage from "./pages/StakeHolderPage";
 import FlowPage from "./pages/Flow";
 import InformationPage from "./pages/InformationPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -65,6 +66,7 @@ const App: React.FC = () => {
             <Route path="/WinRoomPage" element={<WinRoomPage />} />
             <Route path="/CanvasPage" element={<CanvasPage />} />
             <Route path="/FlowPage" element={<FlowPage />} />
+            <Route path="/StakeholderPage" element={<StakeHolderPage />} />
             <Route path="/information" element={<InformationPage />} />
           </Route>
         </Routes>

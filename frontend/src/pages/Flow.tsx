@@ -15,7 +15,7 @@ import { Button, Box, Menu, MenuItem } from "@mui/material";
 import "@xyflow/react/dist/style.css";
 import EditableNode from "../components/EditableNode";
 import { CircleNode, DiamondNode } from "../components/CustomShapes";
-import { CustomNode } from "../types/FlowTypes";
+import { CustomNode } from "../types/types";
 
 const getId = () => `node_${+new Date()}`;
 
