@@ -26,6 +26,7 @@ const Header: React.FC = () => {
     { label: "Sales Tool", path: "/SalestoolPage" },
     { label: "Win Room", path: "/WinRoomPage" },
     { label: "Canvas", path: "/CanvasPage" },
+    { label: "Flow Chart", path: "/FlowPage" },
   ];
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
