@@ -1,4 +1,3 @@
-// src/components/StakeholderHeatMap.tsx
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -16,7 +15,6 @@ import { Stakeholder } from "../types/types";
 
 const LOCAL_STORAGE_KEY = "stakeholders";
 
-// Helper to convert stakeholder data into a 10x10 grid
 const binData = (stakeholders: Stakeholder[], bins: number = 10) => {
   const grid = Array.from({ length: bins }, () => Array(bins).fill(0));
   stakeholders.forEach(({ x, y }) => {

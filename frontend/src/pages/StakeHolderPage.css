@@ -1,0 +1,15 @@
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: rgb(95, 37, 159) !important;
+}
+
+.MuiFormLabel-root.Mui-focused {
+  color: rgb(95, 37, 159) !important;
+}
+
+.MuiSlider-track {
+  background-color: rgb(95, 37, 159) !important;
+}
+.MuiSlider-thumb.Mui-focusVisible,
+.MuiSlider-thumb:hover {
+  box-shadow: 0 0 0 8px rgba(95, 37, 159, 0.16) !important;
+}

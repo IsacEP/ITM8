@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   /* Typography */
   font-family: "Inter", "Nunito", "IBM Plex Sans", sans-serif;
@@ -5,10 +7,10 @@
   font-weight: 400;
 
   /* Light Mode Theme */
-  --primary-color: #374151; /* Soft charcoal gray */
-  --secondary-color: #6b7280; /* Muted gray */
-  --background-color: #f8f9fa; /* Soft off-white */
-  --accent-color: #86b3d1; /* Muted blue */
+  --primary-color: #374151;
+  --secondary-color: #6b7280;
+  --background-color: #f8f9fa;
+  --accent-color: #86b3d1;
   --card-bg: #ffffff;
   --border-color: rgba(0, 0, 0, 0.1);
 
@@ -21,7 +23,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Links */
 a {
   font-weight: 500;
   color: var(--accent-color);
@@ -30,8 +31,6 @@ a {
 a:hover {
   color: #5d91b5; /* Slightly darker muted blue */
 }
-
-/* Buttons */
 
 button {
   border-radius: 8px;
@@ -54,7 +53,6 @@ button:focus-visible {
   outline: 3px solid var(--accent-color);
 }
 
-/* WebKit-based browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -79,7 +77,6 @@ button:focus-visible {
   background: #f1f1f1;
 }
 
-/* Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;

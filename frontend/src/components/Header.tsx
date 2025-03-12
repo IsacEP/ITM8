@@ -58,7 +58,11 @@ const Header: React.FC = () => {
       >
         {/* Left: Logo */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <img src={logo} alt="Logo" style={{ height: 40, marginRight: 16 }} />
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ height: 50, marginRight: 16, marginTop: 10 }}
+          />
         </Box>
 
         {/* Center: Title (Completely centered on the screen) */}

@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  Typography,
-  Paper,
-  Card,
-  CardContent,
-  Grid,
-  TextField,
-  Box,
-} from "@mui/material";
 import PageLayout from "../components/PageLayout";
+import { TextField, Typography } from "@mui/material";
+import "./PipelinePage.css"; // We'll add custom overrides here
 
 const formatNumber = (num: number) => {
   return num.toLocaleString("en-US").replace(/,/g, " ");
 };
 
 const PipelinePage: React.FC = () => {
-  // State initialization from localStorage
+  // --- State / LocalStorage ---
   const [budget, setBudget] = useState<number>(
     Number(localStorage.getItem("budget")) || 0
   );
@@ -76,6 +69,7 @@ const PipelinePage: React.FC = () => {
     closeRevenue,
   ]);
 
+  // --- Calculations ---
   const calculateYield = (revenue: number, percentage: number) =>
     revenue * (percentage / 100);
 
@@ -89,10 +83,13 @@ const PipelinePage: React.FC = () => {
 
   const projectedYield =
     sellCycleLength !== 0 ? (totalYield / sellCycleLength) * monthsLeft : 0;
+
   const gap = budget - projectedYield - yearToDateAttainment;
+
   const additionalLeads =
     avgOpportunitySize !== 0 ? (gap / avgOpportunitySize) * 10 : 0;
 
+  // --- Handler for numeric inputs (removes spaces) ---
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     setValue: (value: number) => void
@@ -102,104 +99,148 @@ const PipelinePage: React.FC = () => {
     setValue(numericValue);
   };
 
+  // Pipeline Metrics config
+  const pipelineMetricsFields = [
+    { label: "Budget (SEK)", value: budget, setValue: setBudget },
+    {
+      label: "Average Sell Cycle Length (months)",
+      value: sellCycleLength,
+      setValue: setSellCycleLength,
+    },
+    {
+      label: "Average Size of Opportunities",
+      value: avgOpportunitySize,
+      setValue: setAvgOpportunitySize,
+    },
+    {
+      label: "Months Left in the Year",
+      value: monthsLeft,
+      setValue: setMonthsLeft,
+    },
+    {
+      label: "Year-to-Date Attainment",
+      value: yearToDateAttainment,
+      setValue: setYearToDateAttainment,
+    },
+  ];
+
+  // Pipeline Steps
+  const pipelineStepsLeft = [
+    {
+      label: "IDENTIFY",
+      value: identifyRevenue,
+      setValue: setIdentifyRevenue,
+      percentage: 10,
+    },
+    {
+      label: "QUALIFY",
+      value: qualifyRevenue,
+      setValue: setQualifyRevenue,
+      percentage: 25,
+    },
+    {
+      label: "VALIDATE",
+      value: validateRevenue,
+      setValue: setValidateRevenue,
+      percentage: 50,
+    },
+  ];
+  const pipelineStepsRight = [
+    {
+      label: "PROVE",
+      value: proveRevenue,
+      setValue: setProveRevenue,
+      percentage: 75,
+    },
+    {
+      label: "PRESENT",
+      value: presentRevenue,
+      setValue: setPresentRevenue,
+      percentage: 90,
+    },
+    {
+      label: "CLOSE",
+      value: closeRevenue,
+      setValue: setCloseRevenue,
+      percentage: 100,
+    },
+  ];
+
+  // Results
+  const resultsList = [
+    { label: "Total Yield in the Pipeline", value: totalYield, unit: "SEK" },
+    {
+      label: "Projected Yield for the Year",
+      value: projectedYield,
+      unit: "SEK",
+    },
+    { label: "Gap", value: gap, unit: "SEK" },
+    {
+      label: "Additional Leads Required to Close the Gap",
+      value: Math.ceil(additionalLeads),
+      unit: "PCS",
+    },
+  ];
+
   return (
     <PageLayout title="Pipeline Volume Assessment Tool">
-      <Box
-        sx={{
-          pl: 4,
-          pr: 4,
-          justifyContent: "center",
-          display: "flex",
-          flexDirection: "row",
-          position: "relative",
-        }}
-      >
-        <Grid
-          container
-          spacing={4}
-          justifyContent="center"
-          display="flex"
-          flexDirection="row"
-        >
-          {/* Inputs Section */}
-          <Grid item xs={12} md={4}>
-            <Paper elevation={3} sx={{ p: 4, pb: 6 }}>
-              <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
+      {/* Page background for subtle contrast */}
+      <div className="bg-gray-50 min-h-screen py-8">
+        {/* Container */}
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Top section: Pipeline Metrics & Pipeline Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Pipeline Metrics */}
+            <div className="bg-white border border-[rgb(95,37,159)]/[0.1] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <Typography
+                variant="h5"
+                className="text-[rgb(95,37,159)] font-semibold mb-4 text-lg"
+                sx={{ mb: 2 }}
+              >
                 Pipeline Metrics
               </Typography>
-              {[
-                { label: "Budget (SEK)", value: budget, setValue: setBudget },
-                {
-                  label: "Average Sell Cycle Length (months)",
-                  value: sellCycleLength,
-                  setValue: setSellCycleLength,
-                },
-                {
-                  label: "Average Size of Opportunities",
-                  value: avgOpportunitySize,
-                  setValue: setAvgOpportunitySize,
-                },
-                {
-                  label: "Months Left in the Year",
-                  value: monthsLeft,
-                  setValue: setMonthsLeft,
-                },
-                {
-                  label: "Year-to-Date Attainment",
-                  value: yearToDateAttainment,
-                  setValue: setYearToDateAttainment,
-                },
-              ].map((input, index) => (
-                <TextField
-                  key={index}
-                  fullWidth
-                  label={input.label}
-                  type="text"
-                  value={input.value ? formatNumber(input.value) : ""}
-                  onChange={(e) => handleInputChange(e, input.setValue)}
-                  inputProps={{
-                    inputMode: "numeric",
-                    pattern: "[0-9]*",
-                    step: 1,
-                  }}
-                  sx={{ mb: 3, fontSize: "1.2rem" }}
-                />
-              ))}
-            </Paper>
-          </Grid>
+              <div className="flex flex-col gap-6">
+                {pipelineMetricsFields.map((input, index) => (
+                  <TextField
+                    key={index}
+                    fullWidth
+                    label={input.label}
+                    type="text"
+                    value={input.value ? formatNumber(input.value) : ""}
+                    onChange={(e) => handleInputChange(e, input.setValue)}
+                    inputProps={{
+                      inputMode: "numeric",
+                      pattern: "[0-9]*",
+                      step: 1,
+                    }}
+                    // MUI + Tailwind synergy
+                    className="bg-white"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "8px",
+                      },
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
 
-          {/* Step Completed Section */}
-          <Grid item xs={12} md={8}>
-            <Paper elevation={3} sx={{ p: 2 }}>
-              <Typography variant="h5" gutterBottom>
+            {/* Revenue in Pipeline Sections */}
+            <div className="md:col-span-2 bg-white border border-[rgb(95,37,159)]/[0.1] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+              <Typography
+                variant="h5"
+                className="text-[rgb(95,37,159)] font-semibold mb-4 text-lg"
+              >
                 Revenue in Pipeline Sections
               </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={4}>
-                  {[
-                    {
-                      label: "IDENTIFY",
-                      value: identifyRevenue,
-                      setValue: setIdentifyRevenue,
-                      percentage: 10,
-                    },
-                    {
-                      label: "QUALIFY",
-                      value: qualifyRevenue,
-                      setValue: setQualifyRevenue,
-                      percentage: 25,
-                    },
-                    {
-                      label: "VALIDATE",
-                      value: validateRevenue,
-                      setValue: setValidateRevenue,
-                      percentage: 50,
-                    },
-                  ].map((step, index) => (
-                    <Box key={index} sx={{ mb: 3 }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left column: IDENTIFY, QUALIFY, VALIDATE */}
+                <div className="space-y-4">
+                  {pipelineStepsLeft.map((step, index) => (
+                    <div key={index}>
                       <Typography
                         variant="subtitle1"
-                        sx={{ fontSize: "1.1rem" }}
+                        className="text-gray-700 font-medium mb-1"
                       >
                         {step.label}
                       </Typography>
@@ -214,11 +255,16 @@ const PipelinePage: React.FC = () => {
                           pattern: "[0-9]*",
                           step: 1,
                         }}
-                        sx={{ mb: 1, fontSize: "1.1rem" }}
+                        className="bg-white"
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "8px",
+                          },
+                        }}
                       />
                       <Typography
                         variant="body2"
-                        sx={{ mt: 1, fontSize: "1.1rem" }}
+                        className="text-gray-600 mt-1 text-sm"
                       >
                         Yield:{" "}
                         {calculateYield(step.value, step.percentage)
@@ -226,34 +272,16 @@ const PipelinePage: React.FC = () => {
                           .replace(/,/g, " ")}{" "}
                         SEK ({step.percentage}%)
                       </Typography>
-                    </Box>
+                    </div>
                   ))}
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  {[
-                    {
-                      label: "PROVE",
-                      value: proveRevenue,
-                      setValue: setProveRevenue,
-                      percentage: 75,
-                    },
-                    {
-                      label: "PRESENT",
-                      value: presentRevenue,
-                      setValue: setPresentRevenue,
-                      percentage: 90,
-                    },
-                    {
-                      label: "CLOSE",
-                      value: closeRevenue,
-                      setValue: setCloseRevenue,
-                      percentage: 100,
-                    },
-                  ].map((step, index) => (
-                    <Box key={index} sx={{ mb: 3 }}>
+                </div>
+                {/* Right column: PROVE, PRESENT, CLOSE */}
+                <div className="space-y-4">
+                  {pipelineStepsRight.map((step, index) => (
+                    <div key={index}>
                       <Typography
                         variant="subtitle1"
-                        sx={{ fontSize: "1.1rem" }}
+                        className="text-gray-700 font-medium mb-1"
                       >
                         {step.label}
                       </Typography>
@@ -268,11 +296,16 @@ const PipelinePage: React.FC = () => {
                           pattern: "[0-9]*",
                           step: 1,
                         }}
-                        sx={{ mb: 1, fontSize: "1.1rem" }}
+                        className="bg-white"
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "8px",
+                          },
+                        }}
                       />
                       <Typography
                         variant="body2"
-                        sx={{ mt: 1, fontSize: "1.1rem" }}
+                        className="text-gray-600 mt-1 text-sm"
                       >
                         Yield:{" "}
                         {calculateYield(step.value, step.percentage)
@@ -280,53 +313,57 @@ const PipelinePage: React.FC = () => {
                           .replace(/,/g, " ")}{" "}
                         SEK ({step.percentage}%)
                       </Typography>
-                    </Box>
+                    </div>
                   ))}
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Results Section */}
-          <Grid item xs={12}>
-            <Paper elevation={3} sx={{ p: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Results
-              </Typography>
-              {[
-                {
-                  label: "Total Yield in the Pipeline",
-                  value: totalYield,
-                  unit: "SEK",
-                },
-                {
-                  label: "Projected Yield for the Year",
-                  value: projectedYield,
-                  unit: "SEK",
-                },
-                { label: "Gap", value: gap, unit: "SEK" },
-                {
-                  label: "Additional Leads Required to Close the Gap",
-                  value: Math.ceil(additionalLeads),
-                  unit: "PCS",
-                },
-              ].map((result, index) => (
-                <Card key={index} sx={{ mb: 2, p: 2, minHeight: "70px" }}>
-                  <CardContent sx={{ p: 1 }}>
-                    <Typography variant="subtitle2" sx={{ fontSize: "1.1rem" }}>
-                      {result.label}
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: "" }}>
-                      {result.value.toLocaleString("en-US").replace(/,/g, " ")}{" "}
-                      {result.unit}
-                    </Typography>
-                  </CardContent>
-                </Card>
+          <div className="mt-6 bg-white border border-[rgb(95,37,159)]/[0.1] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+            <Typography
+              variant="h5"
+              className="text-[rgb(95,37,159)] font-semibold mb-4 text-lg"
+            >
+              Results
+            </Typography>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {resultsList.map((result, index) => (
+                <div
+                  key={index}
+                  className="
+                    bg-gray-50 
+                    rounded-md 
+                    p-4 
+                    border 
+                    border-[rgb(95,37,159)]/[0.1]
+                    hover:border-[rgb(95,37,159)]/[0.3]
+                    transition-colors
+                    flex 
+                    flex-col 
+                    justify-center
+                  "
+                >
+                  <Typography
+                    variant="subtitle2"
+                    className="text-gray-500 mb-1 text-sm"
+                  >
+                    {result.label}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    className="text-gray-800 font-semibold"
+                  >
+                    {result.value.toLocaleString("en-US").replace(/,/g, " ")}{" "}
+                    {result.unit}
+                  </Typography>
+                </div>
               ))}
-            </Paper>
-          </Grid>
-        </Grid>
-      </Box>
+            </div>
+          </div>
+        </div>
+      </div>
     </PageLayout>
   );
 };

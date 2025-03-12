@@ -1,41 +1,40 @@
 import React from "react";
-import { Container, Grid, Paper, Typography, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Container, Typography } from "@mui/material";
 import PageLayout from "../components/PageLayout";
+import ToolCard from "../components/ToolCard";
+import "./HomePage.css";
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
-
   const tools = [
     {
       title: "Pipeline Tool",
       path: "/PipelinePage",
       description:
-        "Manage pipelines efficiently with parameter-based calculations to streamline your processes.",
+        "Manage pipelines with parameter-based calculations to streamline your processes.",
     },
     {
       title: "Rowers Overview",
       path: "/RowersPage",
       description:
-        "Get a quick view of all rowers and understand each letter in ROWERS for deeper metric insights.",
+        "Get a quick view of rowers and understand each letter in ROWERS for deeper metric insights.",
     },
     {
       title: "Rowers Chart",
       path: "/RowersChartPage",
       description:
-        "Visualize rowers' performance in a bar chart for easy comparison and analysis over time.",
+        "Visualize rowers performance in a bar chart for easy comparison and analysis over time.",
     },
     {
       title: "Sales Tool",
       path: "/SalestoolPage",
       description:
-        "Predict future sales through linear regression or calculate weighted opportunities. ",
+        "Predict future sales through regression or calculate weighted opportunities.",
     },
     {
       title: "Win Room",
       path: "/WinRoomPage",
       description:
-        "Showcase your wins and opportunities, keeping track of achievements for ongoing motivation.",
+        "Showcase your wins and opportunities, keeping track of achievements for motivation.",
     },
     {
       title: "Canvas",
@@ -50,7 +49,7 @@ const HomePage: React.FC = () => {
         "Design and analyze flow charts to outline and optimize workflows for improved efficiency.",
     },
     {
-      title: "Staleholder Heat Map",
+      title: "Stakeholder Heat Map",
       path: "/StakeholderPage",
       description:
         "Visualize stakeholder support and influence to prioritize relationships.",
@@ -59,29 +58,37 @@ const HomePage: React.FC = () => {
 
   return (
     <PageLayout title="Home Page">
-      <Container sx={{ marginTop: 4 }}>
-        <Grid container spacing={4}>
-          {tools.map((tool, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Paper elevation={3} sx={{ padding: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  {tool.title}
-                </Typography>
-                <Button
-                  variant="contained"
-                  sx={{ backgroundColor: "rgb(95,37,159)" }}
-                  onClick={() => navigate(tool.path)}
-                >
-                  Go to {tool.title}
-                </Button>
-                <Typography variant="body2" gutterBottom sx={{ marginTop: 1 }}>
-                  {tool.description}
-                </Typography>
-              </Paper>
-            </Grid>
-          ))}
-        </Grid>
+      {/* HERO SECTION */}
+      <Container maxWidth={false} disableGutters>
+        <div className="hero-fade-out relative ">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-24 px-4 rounded-lg">
+            <div className="max-w-7xl mx-auto pl-8">
+              <Typography variant="h3" className="font-bold mb-4">
+                Sales Opportunity Analyzer
+              </Typography>
+              <Typography
+                variant="h6"
+                className="mb-6 max-w-2xl leading-relaxed"
+              >
+                Analyze, plan, and optimize your sales strategies in one place.
+              </Typography>
+            </div>
+          </div>
+          {/* Fade from purple -> white at the bottom of hero */}
+          <div className="fade-bottom"></div>
+        </div>
       </Container>
+
+      {/* TOOLS SECTION */}
+      <div className="bg-white pt-6 pb-12">
+        <Container maxWidth="lg">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {tools.map((tool, index) => (
+              <ToolCard key={index} tool={tool} />
+            ))}
+          </div>
+        </Container>
+      </div>
     </PageLayout>
   );
 };
