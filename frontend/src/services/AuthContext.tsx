@@ -23,6 +23,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         username: import.meta.env.VITE_USER2,
         password: import.meta.env.VITE_PASS2,
       },
+      {
+        username: import.meta.env.VITE_USER3,
+        password: import.meta.env.VITE_PASS3,
+      },
     ];
 
     const validUser = envUsers.find(
