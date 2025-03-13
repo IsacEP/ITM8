@@ -13,6 +13,18 @@ const HomePage: React.FC = () => {
         "Manage pipelines with parameter-based calculations to streamline your processes.",
     },
     {
+      title: "Win Room",
+      path: "/WinRoomPage",
+      description:
+        "Showcase your wins and opportunities, keeping track of achievements for motivation.",
+    },
+    {
+      title: "Stakeholder Map",
+      path: "/StakeholderPage",
+      description:
+        "Visualize stakeholder support and influence to prioritize relationships.",
+    },
+    {
       title: "Rowers Overview",
       path: "/RowersPage",
       description:
@@ -31,12 +43,6 @@ const HomePage: React.FC = () => {
         "Predict future sales through regression or calculate weighted opportunities.",
     },
     {
-      title: "Win Room",
-      path: "/WinRoomPage",
-      description:
-        "Showcase your wins and opportunities, keeping track of achievements for motivation.",
-    },
-    {
       title: "Canvas",
       path: "/CanvasPage",
       description:
@@ -47,12 +53,6 @@ const HomePage: React.FC = () => {
       path: "/FlowPage",
       description:
         "Design and analyze flow charts to outline and optimize workflows for improved efficiency.",
-    },
-    {
-      title: "Stakeholder Heat Map",
-      path: "/StakeholderPage",
-      description:
-        "Visualize stakeholder support and influence to prioritize relationships.",
     },
   ];
 

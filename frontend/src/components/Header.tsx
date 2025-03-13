@@ -21,13 +21,13 @@ const Header: React.FC = () => {
 
   const tools = [
     { label: "Pipeline Tool", path: "/PipelinePage" },
+    { label: "Win Room", path: "/WinRoomPage" },
+    { label: "Stakeholder", path: "/StakeholderPage" },
     { label: "Rowers Overview", path: "/RowersPage" },
     { label: "Rowers Chart", path: "/RowersChartPage" },
     { label: "Sales Tool", path: "/SalestoolPage" },
-    { label: "Win Room", path: "/WinRoomPage" },
     { label: "Canvas", path: "/CanvasPage" },
     { label: "Flow Chart", path: "/FlowPage" },
-    { label: "Stakeholder", path: "/StakeholderPage" },
   ];
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,7 +61,13 @@ const Header: React.FC = () => {
           <img
             src={logo}
             alt="Logo"
-            style={{ height: 50, marginRight: 16, marginTop: 10 }}
+            style={{
+              height: 50,
+              marginRight: 16,
+              marginTop: 10,
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
           />
         </Box>
 

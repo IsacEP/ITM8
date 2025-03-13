@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, TextField } from "@mui/material";
+import { Box } from "@mui/material";
 import {
   BarChart,
   Bar,
@@ -11,13 +11,9 @@ import {
 
 type MiniRowersChartProps = {
   values: number[];
-  onChange: (index: number, value: number) => void;
 };
 
-const MiniRowersChart: React.FC<MiniRowersChartProps> = ({
-  values,
-  onChange,
-}) => {
+const MiniRowersChart: React.FC<MiniRowersChartProps> = ({ values }) => {
   const categories = ["R", "O", "W", "E", "R", "S"];
   const chartData = categories.map((category, index) => ({
     name: category,
@@ -25,27 +21,14 @@ const MiniRowersChart: React.FC<MiniRowersChartProps> = ({
   }));
 
   return (
-    <Box sx={{ mt: 3, p: 2, border: "1px solid #ddd", borderRadius: "8px" }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        ROWERS Analysis
-      </Typography>
-      <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-        {categories.map((letter, index) => (
-          <TextField
-            key={index}
-            label={letter}
-            type="number"
-            inputProps={{ min: 0, max: 5 }}
-            value={values[index]}
-            onChange={(e) => onChange(index, parseInt(e.target.value, 10) || 0)}
-            sx={{ width: "60px" }}
-          />
-        ))}
-      </Box>
+    <Box
+      className="border border-gray-300 rounded-lg"
+      style={{ border: "none" }}
+    >
       <ResponsiveContainer width="100%" height={350}>
         <BarChart data={chartData}>
-          <XAxis dataKey="name" />
-          <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} />
+          <XAxis dataKey="name" stroke="#333" />
+          <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} stroke="#333" />
           <Tooltip />
           <Bar dataKey="value" fill="#6200ea" />
         </BarChart>

@@ -136,147 +136,134 @@ const RowersPage: React.FC = () => {
   };
 
   return (
-    <PageLayout title="ROWERS Opportunity Qualification Framework">
-      <Box width="100%" sx={{ p: 3 }}>
-        {/* 
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ textAlign: "center", mb: 4 }}
-        >
-          ROWERS Opportunity Qualification Framework - Key Questions
-        </Typography>
-        */}
-
-        {/* Card Grid */}
-        <Grid container spacing={3} justifyContent="center">
-          {sections.map((section, index) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={index} margin={"5px"}>
-              {" "}
-              {/* Ensure row-based layout */}
-              <Card
-                onClick={() => handleCardClick(section)}
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  borderLeft: `6px solid ${section.color}`,
-                  cursor: "pointer",
-                  transition: "transform 0.2s",
-                  "&:hover": { transform: "scale(1.03)" },
-                }}
-              >
-                <CardContent>
-                  <Typography
-                    variant="h2"
-                    sx={{ color: section.color, fontWeight: "bold", mb: 2 }}
-                  >
-                    {section.letter}
-                  </Typography>
-                  <Typography variant="h6" sx={{ mb: 2 }}>
-                    {section.title}
-                  </Typography>
-                  <Typography variant="body1">
-                    {section.description.substring(0, 100)}...
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* Modal */}
-        <Modal
-          open={Boolean(selectedSection)}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-            sx: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-          }}
-        >
-          <Fade in={Boolean(selectedSection)}>
-            <Paper
+    <Box width="100%" sx={{ p: 3 }}>
+      <Grid container spacing={3} justifyContent="center">
+        {sections.map((section, index) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index} margin={"5px"}>
+            {" "}
+            {/* Ensure row-based layout */}
+            <Card
+              onClick={() => handleCardClick(section)}
               sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "90%",
-                maxWidth: "900px",
-                p: 5,
-                borderRadius: 4,
-                boxShadow: theme.shadows[5],
-                backgroundColor: "white",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                borderLeft: `6px solid ${section.color}`,
+                cursor: "pointer",
+                transition: "transform 0.2s",
+                "&:hover": { transform: "scale(1.03)" },
               }}
             >
-              {selectedSection && (
-                <>
-                  {/* Top Section */}
-                  <Box>
-                    <Typography
-                      variant="h2"
-                      sx={{
-                        color: selectedSection.color,
-                        fontWeight: "bold",
-                        mb: 2,
-                      }}
-                    >
-                      {selectedSection.letter}
-                    </Typography>
-                    <Typography variant="h5" sx={{ mb: 2 }}>
-                      {selectedSection.title}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mb: 4 }}>
-                      {selectedSection.description}
-                    </Typography>
-                  </Box>
+              <CardContent>
+                <Typography
+                  variant="h2"
+                  sx={{ color: section.color, fontWeight: "bold", mb: 2 }}
+                >
+                  {section.letter}
+                </Typography>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  {section.title}
+                </Typography>
+                <Typography variant="body1">
+                  {section.description.substring(0, 100)}...
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
-                  <Divider sx={{ my: 2 }} />
-
-                  {/* Bottom Section */}
-                  <Box>
-                    <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-                      {selectedSection.titleDescription}
-                    </Typography>
-                    <List>
-                      {selectedSection.steps.map((step, index) => (
-                        <ListItem key={index}>
-                          <ListItemText primary={step} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                </>
-              )}
-            </Paper>
-          </Fade>
-        </Modal>
-
-        {/* Centered Button */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 8,
-          }}
-        >
-          <Button
-            variant="contained"
-            onClick={() => navigate("/RowersChartPage")}
+      {/* Modal */}
+      <Modal
+        open={Boolean(selectedSection)}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+          sx: {
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={Boolean(selectedSection)}>
+          <Paper
             sx={{
-              fontSize: "1.2rem", // Increase font size
-              padding: "10px 20px", // Increase padding
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "90%",
+              maxWidth: "900px",
+              p: 5,
+              borderRadius: 4,
+              boxShadow: theme.shadows[5],
+              backgroundColor: "white",
             }}
           >
-            View ROWERS Chart
-          </Button>
-        </Box>
+            {selectedSection && (
+              <>
+                {/* Top Section */}
+                <Box>
+                  <Typography
+                    variant="h2"
+                    sx={{
+                      color: selectedSection.color,
+                      fontWeight: "bold",
+                      mb: 2,
+                    }}
+                  >
+                    {selectedSection.letter}
+                  </Typography>
+                  <Typography variant="h5" sx={{ mb: 2 }}>
+                    {selectedSection.title}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mb: 4 }}>
+                    {selectedSection.description}
+                  </Typography>
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
+                {/* Bottom Section */}
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+                    {selectedSection.titleDescription}
+                  </Typography>
+                  <List>
+                    {selectedSection.steps.map((step, index) => (
+                      <ListItem key={index}>
+                        <ListItemText primary={step} />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              </>
+            )}
+          </Paper>
+        </Fade>
+      </Modal>
+
+      {/* Centered Button */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 8,
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => navigate("/RowersChartPage")}
+          sx={{
+            fontSize: "1.2rem", // Increase font size
+            padding: "10px 20px", // Increase padding
+          }}
+        >
+          View ROWERS Chart
+        </Button>
       </Box>
-    </PageLayout>
+    </Box>
   );
 };
 
