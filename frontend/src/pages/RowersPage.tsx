@@ -17,7 +17,6 @@ import {
   ListItemText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import PageLayout from "../components/PageLayout";
 
 const RowersPage: React.FC = () => {
   const theme = useTheme();
