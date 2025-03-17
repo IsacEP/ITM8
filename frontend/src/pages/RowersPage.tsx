@@ -9,7 +9,6 @@ import {
   CardContent,
   Modal,
   Backdrop,
-  Fade,
   useTheme,
   Divider,
   List,
@@ -185,62 +184,60 @@ const RowersPage: React.FC = () => {
           },
         }}
       >
-        <Fade in={Boolean(selectedSection)}>
-          <Paper
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "90%",
-              maxWidth: "900px",
-              p: 5,
-              borderRadius: 4,
-              boxShadow: theme.shadows[5],
-              backgroundColor: "white",
-            }}
-          >
-            {selectedSection && (
-              <>
-                {/* Top Section */}
-                <Box>
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      color: selectedSection.color,
-                      fontWeight: "bold",
-                      mb: 2,
-                    }}
-                  >
-                    {selectedSection.letter}
-                  </Typography>
-                  <Typography variant="h5" sx={{ mb: 2 }}>
-                    {selectedSection.title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 4 }}>
-                    {selectedSection.description}
-                  </Typography>
-                </Box>
+        <Paper
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "90%",
+            maxWidth: "900px",
+            p: 5,
+            borderRadius: 4,
+            boxShadow: theme.shadows[5],
+            backgroundColor: "white",
+          }}
+        >
+          {selectedSection && (
+            <>
+              {/* Top Section */}
+              <Box>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    color: selectedSection.color,
+                    fontWeight: "bold",
+                    mb: 2,
+                  }}
+                >
+                  {selectedSection.letter}
+                </Typography>
+                <Typography variant="h5" sx={{ mb: 2 }}>
+                  {selectedSection.title}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 4 }}>
+                  {selectedSection.description}
+                </Typography>
+              </Box>
 
-                <Divider sx={{ my: 2 }} />
+              <Divider sx={{ my: 2 }} />
 
-                {/* Bottom Section */}
-                <Box>
-                  <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-                    {selectedSection.titleDescription}
-                  </Typography>
-                  <List>
-                    {selectedSection.steps.map((step, index) => (
-                      <ListItem key={index}>
-                        <ListItemText primary={step} />
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              </>
-            )}
-          </Paper>
-        </Fade>
+              {/* Bottom Section */}
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
+                  {selectedSection.titleDescription}
+                </Typography>
+                <List>
+                  {selectedSection.steps.map((step, index) => (
+                    <ListItem key={index}>
+                      <ListItemText primary={step} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            </>
+          )}
+        </Paper>
       </Modal>
 
       {/* Centered Button */}

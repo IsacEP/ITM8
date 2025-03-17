@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -21,6 +21,7 @@ import {
   Tooltip,
   Scatter,
   ReferenceLine,
+  LabelList,
 } from "recharts";
 import type { Stakeholder } from "../types/types";
 
@@ -31,6 +32,23 @@ const StakeholderScatterChart: React.FC = () => {
   const [name, setName] = useState("");
   const [x, setX] = useState(50);
   const [y, setY] = useState(50);
+
+  // Calculate average support and influence
+  const averageSupport = useMemo(() => {
+    return stakeholders.length
+      ? (
+          stakeholders.reduce((sum, s) => sum + s.x, 0) / stakeholders.length
+        ).toFixed(2)
+      : "0.00";
+  }, [stakeholders]);
+
+  const averageInfluence = useMemo(() => {
+    return stakeholders.length
+      ? (
+          stakeholders.reduce((sum, s) => sum + s.y, 0) / stakeholders.length
+        ).toFixed(2)
+      : "0.00";
+  }, [stakeholders]);
 
   // --- LocalStorage Logic ---
   const updateStakeholders = (newStakeholders: Stakeholder[]) => {
@@ -83,26 +101,22 @@ const StakeholderScatterChart: React.FC = () => {
     updateStakeholders(updated);
   };
 
-  // Custom tooltip with a remove button
+  // Custom tooltip with name, support, and influence
   const renderTooltip = (props: any) => {
     const { active, payload } = props;
     if (active && payload && payload.length) {
-      const { name } = payload[0].payload;
+      const { name, x, y } = payload[0].payload;
       return (
         <div className="bg-white border border-gray-300 p-2 rounded-md shadow-md">
           <Typography variant="body2" className="text-gray-800 font-semibold">
             {name}
           </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => handleRemove(name)}
-            className="mt-1"
-          >
-            Remove
-          </Button>
+          <Typography variant="body2" className="text-gray-600">
+            Support: {x}
+          </Typography>
+          <Typography variant="body2" className="text-gray-600">
+            Influence: {y}
+          </Typography>
         </div>
       );
     }
@@ -114,7 +128,6 @@ const StakeholderScatterChart: React.FC = () => {
     return <circle cx={cx} cy={cy} r={8} fill={fill} />;
   };
 
-  // --- UI ---
   return (
     <div className="flex flex-col space-y-6">
       {/* INPUT CARD */}
@@ -156,12 +169,8 @@ const StakeholderScatterChart: React.FC = () => {
                     width: 28,
                     height: 28,
                   },
-                  "& .MuiSlider-track": {
-                    height: 10,
-                  },
-                  "& .MuiSlider-rail": {
-                    height: 10,
-                  },
+                  "& .MuiSlider-track": { height: 10 },
+                  "& .MuiSlider-rail": { height: 10 },
                 }}
               />
             </div>
@@ -181,12 +190,8 @@ const StakeholderScatterChart: React.FC = () => {
                     width: 28,
                     height: 28,
                   },
-                  "& .MuiSlider-track": {
-                    height: 10,
-                  },
-                  "& .MuiSlider-rail": {
-                    height: 10,
-                  },
+                  "& .MuiSlider-track": { height: 10 },
+                  "& .MuiSlider-rail": { height: 10 },
                 }}
               />
             </div>
@@ -215,16 +220,24 @@ const StakeholderScatterChart: React.FC = () => {
           className="pb-0"
         />
         <CardContent>
-          <div className="w-full h-[400px]">
+          {/* Increased height for better layout */}
+          <div className="w-full h-[450px]">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+              <ScatterChart
+                margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
+              >
+                {/* 
+                  We remove dotted lines by using a solid stroke. 
+                  Or set strokeDasharray to '0' (no dashes).
+                */}
+                <CartesianGrid stroke="#e0e0e0" strokeDasharray="0" />
                 <XAxis
                   type="number"
                   dataKey="x"
                   name="Support"
                   domain={[0, 100]}
                   tick={{ fill: "#4b5563" }}
+                  padding={{ left: 10, right: 10 }}
                 />
                 <YAxis
                   type="number"
@@ -232,20 +245,34 @@ const StakeholderScatterChart: React.FC = () => {
                   name="Influence"
                   domain={[0, 100]}
                   tick={{ fill: "#4b5563" }}
+                  padding={{ top: 10, bottom: 10 }}
                 />
-                {/* Quadrant reference lines */}
+                {/* 
+                  Only keep the reference lines in purple dashed style
+                  to highlight 50-50 
+                */}
                 <ReferenceLine x={50} stroke="purple" strokeDasharray="3 3" />
                 <ReferenceLine y={50} stroke="purple" strokeDasharray="3 3" />
+
                 <Tooltip content={renderTooltip} />
                 <Scatter
                   name="Stakeholders"
                   data={stakeholders}
                   fill="rgb(95,37,159)"
                   shape={renderLargeDot}
-                />
+                  animationDuration={500}
+                >
+                  <LabelList dataKey="name" position="top" offset={15} />
+                </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
           </div>
+          {stakeholders.length > 0 && (
+            <Typography variant="body2" className="mt-2 text-center">
+              Average Support: {averageSupport} | Average Influence:{" "}
+              {averageInfluence}
+            </Typography>
+          )}
         </CardContent>
       </Card>
 
