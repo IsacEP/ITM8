@@ -9,7 +9,7 @@ import {
   ListItemText,
   Divider,
 } from "@mui/material";
-import PageLayout from "../components/PageLayout";
+import PageLayout from "../../components/Layout/PageLayout";
 
 const InformationPage: React.FC = () => {
   // List of sub-tools with descriptions

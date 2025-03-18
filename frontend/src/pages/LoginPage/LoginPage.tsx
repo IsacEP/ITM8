@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { TextField, Button, Box, Typography, Container } from "@mui/material";
-import { useAuth } from "../services/AuthContext";
+import { useAuth } from "../../services/AuthContext";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import logo from "../../assets/logo.png";
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();

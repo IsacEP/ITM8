@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PageLayout from "../components/PageLayout";
+import PageLayout from "../../components/Layout/PageLayout";
 import { TextField, Typography } from "@mui/material";
 import "./PipelinePage.css"; // We'll add custom overrides here
 

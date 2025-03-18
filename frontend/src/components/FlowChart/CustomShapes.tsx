@@ -2,7 +2,7 @@
 import React from "react";
 import { Handle, NodeProps, Position } from "@xyflow/react";
 import { Box } from "@mui/material";
-import { CircleNodeType, DiamondNodeType } from "../types/types";
+import { CircleNodeType, DiamondNodeType } from "../../types/types";
 
 export const CircleNode: React.FC<NodeProps<CircleNodeType>> = ({ data }) => {
   const label = data.label || "No Label";

@@ -2,19 +2,19 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./services/AuthContext";
 import PrivateRoute from "./utils/PrivateRoute";
-import Header from "./components/Header";
-import HomePage from "./pages/HomePage";
-import PipelinePage from "./pages/PipelinePage";
-import RowersPage from "./pages/RowersPage";
-import RowersChartPage from "./pages/RowersChartPage";
-import SalesToolPage from "./pages/SalestoolPage";
-import WinRoomPage from "./pages/WinRoomPage";
-import CanvasPage from "./pages/CanvasPage";
-import StakeHolderPage from "./pages/StakeHolderPage";
-import FlowPage from "./pages/Flow";
-import InformationPage from "./pages/InformationPage";
+import Header from "./components/Layout/Header";
+import HomePage from "./pages/HomePage/HomePage";
+import PipelinePage from "./pages/PipelinePage/PipelinePage";
+import RowersPage from "./pages/RowersPage/RowersPage";
+import RowersChartPage from "./pages/RowersChartPage/RowersChartPage";
+import SalesToolPage from "./pages/SalestoolPage/SalestoolPage";
+import WinRoomPage from "./pages/WinRoomPage/WinRoomPage";
+import CanvasPage from "./pages/CanvasPage/CanvasPage";
+import StakeHolderPage from "./pages/StakeHolderPage/StakeHolderPage";
+import FlowPage from "./pages/FlowPage/Flow";
+import InformationPage from "./pages/InformationPage/InformationPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
 
 // Theme for the Rowers page (if needed)
 const Rowertheme = createTheme({

@@ -18,7 +18,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import PageLayout from "../components/PageLayout";
+import PageLayout from "../../components/Layout/PageLayout";
 import html2canvas from "html2canvas";
 
 type RowerData = {

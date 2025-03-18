@@ -9,8 +9,8 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
-import { useAuth } from "../services/AuthContext";
+import logo from "../../assets/logo.png";
+import { useAuth } from "../../services/AuthContext";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();

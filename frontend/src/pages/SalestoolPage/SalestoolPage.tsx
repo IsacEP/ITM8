@@ -10,9 +10,9 @@ import {
   Button,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import OpportunityScoringTool from "../components/OpportunityScoringTool";
-import SalesPredictionTool from "../components/SalesPredictionTool";
-import PageLayout from "../components/PageLayout";
+import OpportunityScoringTool from "../../components/OpportunityScoringTool";
+import SalesPredictionTool from "../../components/SalesPredictionTool";
+import PageLayout from "../../components/Layout/PageLayout";
 
 const SalesToolPage: React.FC = () => {
   const theme = useTheme();

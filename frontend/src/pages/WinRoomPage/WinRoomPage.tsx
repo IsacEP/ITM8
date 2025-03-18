@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import numeral from "numeral";
-import MiniRowersChart from "../components/MiniRowersChart";
-import "./WinRoomPage.css"; // Custom CSS if needed
+import MiniRowersChart from "../../components/WinRoom/MiniRowersChart";
+import "./WinRoomPage.css";
 
 // Types
 type Activity = {
