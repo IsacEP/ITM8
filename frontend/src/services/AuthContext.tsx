@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   ): Promise<boolean> => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/login/",
+        "/api/login/",
         { username, password },
         { headers: { "Content-Type": "application/json" } }
       );

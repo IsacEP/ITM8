@@ -6,7 +6,7 @@ export const login = async (
 ): Promise<boolean> => {
   try {
     const response = await axios.post(
-      "http://localhost:8000/api/login/",
+      "/api/login/",
       { username, password },
       { headers: { "Content-Type": "application/json" } }
     );

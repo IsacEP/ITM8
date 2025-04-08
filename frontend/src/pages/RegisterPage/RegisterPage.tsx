@@ -15,7 +15,7 @@ const RegisterPage: React.FC = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/register/",
+        "/api/register/",
         { username, password },
         { headers: { "Content-Type": "application/json" } }
       );
