@@ -45,7 +45,7 @@ const Rowertheme = createTheme({
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Router basename="/ITM8">
+      <Router>
         <Header />
         <Routes>
           <Route path="/login" element={<LoginPage />} />
