@@ -104,7 +104,7 @@ class SalesDataList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 def index(request):
-    index_path = os.path.join(settings.BASE_DIR, 'frontend_build', 'index.html')
+    index_path = os.path.join(settings.BASE_DIR, 'frontend_build', 'dist', 'index.html')
     try:
         with open(index_path, encoding='utf-8') as f:
             return HttpResponse(f.read())
