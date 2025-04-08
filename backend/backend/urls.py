@@ -25,7 +25,7 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    re_path(r'^ITM8/.*$', index, name='index'),
+    re_path(r'^ITM8(?:/.*)?$', index, name='index'),
 ]
 
 if settings.DEBUG:
