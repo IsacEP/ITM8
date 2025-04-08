@@ -20,13 +20,17 @@ from django.conf import settings
 from django.conf.urls.static import static
 from api import views
 from api.views import index
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    re_path(r'^.*$', index, name='index'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns += [
+    re_path(r'^(?!static/).*$', TemplateView.as_view(template_name='index.html'), name='index'),
+]

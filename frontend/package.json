@@ -6,8 +6,8 @@
   "main": "dist/electron/electron.cjs",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run copy-electron",
-    "copy-electron": "mkdir -p dist/electron && cp src/electron/electron.cjs dist/electron/electron.cjs",
+    "build": "vite build && npm run copy-build",
+    "copy-build": "rm -rf ../static && mkdir -p ../static && cp -r ../build/assets ../static/assets && mkdir -p ../templates && cp ../build/index.html ../templates/index.html",
     "lint": "eslint .",
     "preview": "vite preview",
     "dev:electron": "npm run build && electron ./dist/electron/electron.cjs",
