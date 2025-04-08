@@ -16,4 +16,6 @@ urlpatterns = [
     path("pipeline/<int:pk>/", views.PipelineDataDetailView.as_view(), name="pipeline-detail"),
     path("winroom/", views.WinroomDataListCreateView.as_view(), name="winroom-list-create"),
     path("winroom/<int:pk>/", views.WinroomDataDetailView.as_view(), name="winroom-detail"),
+    path("stakeholder/", views.StakeholderDataListCreateView.as_view(), name="stakeholder-list-create"),
+    path("stakeholder/<int:pk>/", views.StakeholderDataDetailView.as_view(), name="stakeholder-detail"),
 ]

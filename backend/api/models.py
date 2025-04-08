@@ -30,6 +30,8 @@ class PipelineData(models.Model):
     
 class WinroomData(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='winrooms')
+    name = models.CharField(max_length=255, default="Unnamed Salesman")
+    reviews = models.JSONField(default=list, blank=True)
     description = models.TextField(blank=True, default="")
     responsible = models.CharField(max_length=255, blank=True, default="")
     deadline = models.DateField(null=True, blank=True)
@@ -44,7 +46,17 @@ class WinroomData(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.user.username}'s WinroomData ({self.id})"
+        return self.name
+    
+class StakeholderData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='stakeholderdata')
+    name = models.CharField(max_length=255, default="Unnamed Stakeholder Map")
+    stakeholders = models.JSONField(default=list, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
 
 class SalesData(models.Model):
     region = models.CharField(max_length=50)

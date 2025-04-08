@@ -13,6 +13,8 @@ from rest_framework import generics, permissions
 from .models import PipelineData
 from .models import WinroomData
 from .serializers import WinroomDataSerializer
+from .models import StakeholderData
+from .serializers import StakeholderDataSerializer
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -74,6 +76,23 @@ class WinroomDataDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return WinroomData.objects.filter(user=self.request.user)
+
+class StakeholderDataListCreateView(generics.ListCreateAPIView):
+    serializer_class = StakeholderDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return StakeholderData.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class StakeholderDataDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StakeholderDataSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return StakeholderData.objects.filter(user=self.request.user)
 
 class SalesDataList(APIView):
     def get(self, request):

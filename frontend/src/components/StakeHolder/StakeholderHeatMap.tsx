@@ -11,7 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Stakeholder } from "../types/types";
+import { Stakeholder } from "../../types/types";
 
 const LOCAL_STORAGE_KEY = "stakeholders";
 

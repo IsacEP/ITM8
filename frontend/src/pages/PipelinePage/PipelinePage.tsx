@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { TextField, Typography, Button } from "@mui/material";
+import {
+  TextField,
+  Typography,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
 import {
   getPipelines,
   getPipeline,
   createPipeline,
   updatePipeline,
+  deletePipelineData,
 } from "../../services/api";
 import "./PipelinePage.css";
 
@@ -41,7 +51,10 @@ const PipelinePage: React.FC = () => {
   const [toastMessage, setToastMessage] = useState<string>("");
   const [showToast, setShowToast] = useState<boolean>(false);
 
-  // Get token from localStorage (or via your AuthContext)
+  // --- Delete Confirmation Modal State ---
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+
+  // Get token from localStorage
   const token = localStorage.getItem("token") || "";
 
   // --- Fetch pipeline list on mount ---
@@ -172,15 +185,13 @@ const PipelinePage: React.FC = () => {
 
   // --- Dropdown Handlers ---
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  const handlePipelineSelectChange = (value: number | "new") => {
+  // Modified handler to auto-fetch pipeline data when a selection is made.
+  const handlePipelineSelectChange = async (value: number | "new") => {
     setSelectedPipelineId(value);
     setDropdownOpen(false);
-  };
-
-  const handleFetchPipeline = async () => {
-    if (selectedPipelineId !== "new") {
+    if (value !== "new") {
       try {
-        const data = await getPipeline(Number(selectedPipelineId), token);
+        const data = await getPipeline(Number(value), token);
         setBudget(Number(data.budget));
         setSellCycleLength(Number(data.sellCycleLength));
         setAvgOpportunitySize(Number(data.avgOpportunitySize));
@@ -195,6 +206,19 @@ const PipelinePage: React.FC = () => {
       } catch (error) {
         console.error("Error fetching pipeline:", error);
       }
+    } else {
+      // Reset fields for a new pipeline
+      setBudget(0);
+      setSellCycleLength(0);
+      setAvgOpportunitySize(0);
+      setMonthsLeft(0);
+      setYearToDateAttainment(0);
+      setIdentifyRevenue(0);
+      setQualifyRevenue(0);
+      setValidateRevenue(0);
+      setProveRevenue(0);
+      setPresentRevenue(0);
+      setCloseRevenue(0);
     }
   };
 
@@ -276,10 +300,54 @@ const PipelinePage: React.FC = () => {
     }
   };
 
+  // --- Delete Pipeline Handler & Confirmation ---
+  const handleDeletePipeline = async () => {
+    if (selectedPipelineId !== "new") {
+      try {
+        await deletePipelineData(Number(selectedPipelineId), token);
+        const updatedPipelines = await getPipelines(token);
+        setPipelines(updatedPipelines);
+        if (updatedPipelines.length > 0) {
+          const firstPipeline = updatedPipelines[0];
+          setSelectedPipelineId(firstPipeline.id);
+          const data = await getPipeline(firstPipeline.id, token);
+          setBudget(Number(data.budget));
+          setSellCycleLength(Number(data.sellCycleLength));
+          setAvgOpportunitySize(Number(data.avgOpportunitySize));
+          setMonthsLeft(Number(data.monthsLeft));
+          setYearToDateAttainment(Number(data.yearToDateAttainment));
+          setIdentifyRevenue(Number(data.identifyRevenue));
+          setQualifyRevenue(Number(data.qualifyRevenue));
+          setValidateRevenue(Number(data.validateRevenue));
+          setProveRevenue(Number(data.proveRevenue));
+          setPresentRevenue(Number(data.presentRevenue));
+          setCloseRevenue(Number(data.closeRevenue));
+        } else {
+          setSelectedPipelineId("new");
+          setBudget(0);
+          setSellCycleLength(0);
+          setAvgOpportunitySize(0);
+          setMonthsLeft(0);
+          setYearToDateAttainment(0);
+          setIdentifyRevenue(0);
+          setQualifyRevenue(0);
+          setValidateRevenue(0);
+          setProveRevenue(0);
+          setPresentRevenue(0);
+          setCloseRevenue(0);
+        }
+        showToastMessage("Pipeline deleted successfully!");
+      } catch (error: any) {
+        console.error("Error deleting pipeline:", error);
+        showToastMessage("Error deleting pipeline. Please try again.");
+      }
+    }
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen py-8 relative">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Custom Dropdown */}
+        {/* Custom Dropdown and Buttons */}
         <div className="mb-6 flex items-center space-x-4">
           <div className="relative inline-block text-left">
             <button
@@ -325,23 +393,41 @@ const PipelinePage: React.FC = () => {
               </div>
             )}
           </div>
-
           <Button
             variant="contained"
             color="primary"
-            onClick={handleFetchPipeline}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md"
-          >
-            Fetch
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
             onClick={handleSavePipeline}
             className="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-md"
+            sx={{
+              bgcolor: "indigo.600",
+              "&:hover": { bgcolor: "indigo.700" },
+              px: 2,
+              py: 1,
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+            }}
           >
-            Save
+            Save Pipeline
           </Button>
+          {selectedPipelineId !== "new" && (
+            <Button
+              variant="contained"
+              onClick={() => setShowDeleteConfirm(true)}
+              sx={{
+                ml: 2,
+                bgcolor: "transparent",
+                border: "1px solid red",
+                color: "red",
+                "&:hover": { bgcolor: "red", color: "white" },
+                px: 2,
+                py: 1,
+                borderRadius: "8px",
+                fontSize: "0.875rem",
+              }}
+            >
+              Delete Pipeline
+            </Button>
+          )}
         </div>
 
         {/* Pipeline Metrics & Revenue Sections */}
@@ -541,6 +627,34 @@ const PipelinePage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+      >
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this pipeline?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteConfirm(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setShowDeleteConfirm(false);
+              handleDeletePipeline();
+            }}
+            color="error"
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

@@ -83,7 +83,7 @@ const Header: React.FC = () => {
             whiteSpace: "nowrap",
           }}
         >
-          Sales Opportunity Analyzer
+          ITM8 Sales Tool
         </Typography>
 
         {/* Right: Navigation Buttons */}

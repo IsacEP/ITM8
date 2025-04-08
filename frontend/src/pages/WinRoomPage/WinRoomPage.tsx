@@ -12,13 +12,25 @@ import {
   Backdrop,
   IconButton,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import numeral from "numeral";
 import MiniRowersChart from "../../components/WinRoom/MiniRowersChart";
+import {
+  getWinroomData,
+  getWinroomItem,
+  createWinroomData,
+  updateWinroomData,
+  deleteWinroomData,
+} from "../../services/api";
 import "./WinRoomPage.css";
 
-// Types
+// ----- Types -----
 type Activity = {
   description: string;
   deadline: string;
@@ -37,7 +49,7 @@ type Review = {
   activities: Activity[];
 };
 
-// Default object
+// Default review object
 const defaultReview: Review = {
   description: "",
   responsible: "",
@@ -51,12 +63,12 @@ const defaultReview: Review = {
   activities: [],
 };
 
-// ROWERS data with colors for the modal heading
+// ROWERS data (for the modal)
 const rowersData = [
   {
     letter: "R",
     title: "Roadblock",
-    color: "#6200ea", // Purple
+    color: "#6200ea",
     description:
       "How well do you understand the customer's pain and obstacles?",
     steps: [
@@ -70,7 +82,7 @@ const rowersData = [
   {
     letter: "O",
     title: "Ownership",
-    color: "#FF9800", // Orange
+    color: "#FF9800",
     description: "Who in the customer's organization is responsible?",
     steps: [
       "1: No clear owner of the problem.",
@@ -83,7 +95,7 @@ const rowersData = [
   {
     letter: "W",
     title: "Win Likelihood",
-    color: "#4CAF50", // Green
+    color: "#4CAF50",
     description: "Assessment of how likely you are to win the deal.",
     steps: [
       "1: Very low likelihood.",
@@ -96,7 +108,7 @@ const rowersData = [
   {
     letter: "E",
     title: "Economic Value",
-    color: "#FFC107", // Amber
+    color: "#FFC107",
     description: "How compelling is the economic case for your solution?",
     steps: [
       "1: Economic value is unclear.",
@@ -109,7 +121,7 @@ const rowersData = [
   {
     letter: "R",
     title: "Risk",
-    color: "#F44336", // Red
+    color: "#F44336",
     description: "Assessment of how well risks are managed.",
     steps: [
       "1: Significant risks exist.",
@@ -122,7 +134,7 @@ const rowersData = [
   {
     letter: "S",
     title: "Stakeholders",
-    color: "#2196F3", // Blue
+    color: "#2196F3",
     description: "Evaluation of engagement with key stakeholders.",
     steps: [
       "1: No engagement with key stakeholders.",
@@ -135,23 +147,40 @@ const rowersData = [
 ];
 
 const WinRoomPage: React.FC = () => {
-  // Load or initialize reviews
-  const loadReviews = (): Review[] => {
-    try {
-      const savedData = localStorage.getItem("reviews");
-      return savedData ? JSON.parse(savedData) : Array(3).fill(defaultReview);
-    } catch (error) {
-      console.error("Error loading reviews:", error);
-      return [defaultReview, defaultReview, defaultReview];
-    }
-  };
+  const getNewReview = (): Review => ({
+    description: "",
+    responsible: "",
+    deadline: "",
+    budget: 0,
+    totalPipelineValue: 0,
+    closedValue: 0,
+    opportunityGap: 0,
+    pipelineGap: 0,
+    rowersValues: Array(6).fill(0),
+    activities: [],
+  });
 
-  const [reviews, setReviews] = useState<Review[]>(loadReviews());
-  const [activityInputs, setActivityInputs] = useState(
-    Array(3).fill({ description: "", deadline: "" })
-  );
+  // ----- State for Winroom Data -----
+  const [reviews, setReviews] = useState<Review[]>([
+    getNewReview(),
+    getNewReview(),
+    getNewReview(),
+  ]);
+  const [winroomId, setWinroomId] = useState<number | "new">("new");
 
-  // Modal states
+  // ----- Dropdown for Salesmen -----
+  const [winroomList, setWinroomList] = useState<any[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // ----- Modal for New Salesman Name -----
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [newWinroomName, setNewWinroomName] = useState("");
+
+  // ----- Toast Notification State -----
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
+
+  // ----- ROWERS Modal (for selecting a rowers value) -----
   const [rowersModalOpen, setRowersModalOpen] = useState(false);
   const [selectedRowerIndex, setSelectedRowerIndex] = useState<number | null>(
     null
@@ -160,34 +189,79 @@ const WinRoomPage: React.FC = () => {
     null
   );
 
-  useEffect(() => {
-    localStorage.setItem("reviews", JSON.stringify(reviews));
-  }, [reviews]);
+  // ----- Activity input state (one per review) -----
+  const [activityInputs, setActivityInputs] = useState([
+    { description: "", deadline: "" },
+    { description: "", deadline: "" },
+    { description: "", deadline: "" },
+  ]);
 
-  // Generic field handler
-  const handleChange = (index: number, field: keyof Review, value: any) => {
-    const updatedReviews = [...reviews];
-    updatedReviews[index] = { ...updatedReviews[index], [field]: value };
-    setReviews(updatedReviews);
+  // ----- Delete Confirmation Modal State for Winroom -----
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const token = localStorage.getItem("token") || "";
+
+  // ----- Fetch Winroom Records on Mount -----
+  useEffect(() => {
+    const fetchWinrooms = async () => {
+      if (token) {
+        try {
+          const data = await getWinroomData(token);
+          setWinroomList(data);
+          if (data.length > 0) {
+            // Select the first record by default
+            setWinroomId(data[0].id);
+            setReviews(
+              data[0].reviews || [
+                getNewReview(),
+                getNewReview(),
+                getNewReview(),
+              ]
+            );
+          } else {
+            setWinroomId("new");
+            setReviews([getNewReview(), getNewReview(), getNewReview()]);
+          }
+        } catch (error) {
+          console.error("Error fetching winroom data:", error);
+          setWinroomId("new");
+          setReviews([getNewReview(), getNewReview(), getNewReview()]);
+        }
+      }
+    };
+    fetchWinrooms();
+  }, [token]);
+
+  // ----- Toast Handler -----
+  const showToastMessage = (msg: string) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
-  // Update a ROWERS value
+  // ----- Generic Review Field Handler -----
+  const handleChange = (index: number, field: keyof Review, value: any) => {
+    const updated = [...reviews];
+    updated[index] = { ...updated[index], [field]: value };
+    setReviews(updated);
+  };
+
+  // ----- ROWERS Handler -----
   const handleRowersChange = (
     reviewIndex: number,
     rowerIndex: number,
     value: number
   ) => {
-    const updatedReviews = [...reviews];
-    const updatedRowers = [...updatedReviews[reviewIndex].rowersValues];
+    const updated = [...reviews];
+    const updatedRowers = [...updated[reviewIndex].rowersValues];
     updatedRowers[rowerIndex] = value;
-    updatedReviews[reviewIndex] = {
-      ...updatedReviews[reviewIndex],
+    updated[reviewIndex] = {
+      ...updated[reviewIndex],
       rowersValues: updatedRowers,
     };
-    setReviews(updatedReviews);
+    setReviews(updated);
   };
 
-  // Modal logic
   const openRowersModal = (reviewIndex: number, rowerIndex: number) => {
     setCurrentReviewIndex(reviewIndex);
     setSelectedRowerIndex(rowerIndex);
@@ -200,7 +274,6 @@ const WinRoomPage: React.FC = () => {
     setCurrentReviewIndex(null);
   };
 
-  // On selecting a value in the modal
   const handleSelectRowersValue = (value: number) => {
     if (currentReviewIndex !== null && selectedRowerIndex !== null) {
       handleRowersChange(currentReviewIndex, selectedRowerIndex, value);
@@ -208,7 +281,7 @@ const WinRoomPage: React.FC = () => {
     closeRowersModal();
   };
 
-  // Activity input changes
+  // ----- Activity Handlers -----
   const handleActivityInputChange = (
     index: number,
     field: keyof Activity,
@@ -220,29 +293,194 @@ const WinRoomPage: React.FC = () => {
   };
 
   const handleAddActivity = (reviewIndex: number) => {
-    const newActivity = activityInputs[reviewIndex];
-    if (newActivity.description.trim() === "") return;
-    const updatedReviews = [...reviews];
-    updatedReviews[reviewIndex].activities.push(newActivity);
-    setReviews(updatedReviews);
-
-    // Reset input fields for this review
+    const newAct = activityInputs[reviewIndex];
+    if (newAct.description.trim() === "") return;
+    const updated = [...reviews];
+    updated[reviewIndex].activities.push(newAct);
+    setReviews(updated);
     const updatedInputs = [...activityInputs];
     updatedInputs[reviewIndex] = { description: "", deadline: "" };
     setActivityInputs(updatedInputs);
   };
 
   const handleDeleteActivity = (reviewIndex: number, activityIndex: number) => {
-    const updatedReviews = [...reviews];
-    updatedReviews[reviewIndex].activities.splice(activityIndex, 1);
-    setReviews(updatedReviews);
+    const updated = [...reviews];
+    updated[reviewIndex].activities.splice(activityIndex, 1);
+    setReviews(updated);
+  };
+
+  // ----- Dropdown Handlers for Winroom Records -----
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const handleWinroomSelectChange = (value: number | "new") => {
+    setDropdownOpen(false);
+    if (value !== "new") {
+      getWinroomItem(Number(value), token)
+        .then((data) => {
+          setWinroomId(data.id);
+          setReviews(
+            data.reviews || [getNewReview(), getNewReview(), getNewReview()]
+          );
+        })
+        .catch((err) => console.error("Error fetching winroom item:", err));
+    } else {
+      setWinroomId("new");
+      setReviews([getNewReview(), getNewReview(), getNewReview()]);
+    }
+  };
+
+  // ----- Save Winroom Data Handler -----
+  const handleSaveWinroom = async () => {
+    const payload = { reviews };
+    try {
+      if (winroomId === "new") {
+        // Instead of window.prompt(), open our modal to enter the name for the new record.
+        setShowNameModal(true);
+        return;
+      } else {
+        await updateWinroomData(Number(winroomId), payload, token);
+        showToastMessage("Winroom data updated successfully!");
+      }
+    } catch (error: any) {
+      console.error(
+        "Error saving winroom data:",
+        error.response ? error.response.data : error
+      );
+      showToastMessage("Error saving winroom data. Please try again.");
+    }
+  };
+
+  // ----- Modal Save Handler for New Winroom Record -----
+  const handleModalSave = async () => {
+    if (!newWinroomName) return;
+    const payload = { reviews };
+    const newPayload = { name: newWinroomName, ...payload };
+    try {
+      console.log("Creating new winroom with payload:", newPayload);
+      const newWinroom = await createWinroomData(newPayload, token);
+      setWinroomId(newWinroom.id);
+      showToastMessage("Winroom data created successfully!");
+      setShowNameModal(false);
+      setNewWinroomName("");
+      // Refresh winroom list if needed
+      const list = await getWinroomData(token);
+      setWinroomList(list);
+    } catch (error: any) {
+      console.error(
+        "Error saving winroom data:",
+        error.response ? error.response.data : error
+      );
+      showToastMessage("Error saving winroom data. Please try again.");
+    }
+  };
+
+  // ----- Delete Winroom Handler & Confirmation -----
+  const handleDeleteWinroom = async () => {
+    if (winroomId !== "new") {
+      try {
+        await deleteWinroomData(Number(winroomId), token);
+        const list = await getWinroomData(token);
+        setWinroomList(list);
+        if (list.length > 0) {
+          setWinroomId(list[0].id);
+          setReviews(
+            list[0].reviews || [getNewReview(), getNewReview(), getNewReview()]
+          );
+        } else {
+          setWinroomId("new");
+          setReviews([getNewReview(), getNewReview(), getNewReview()]);
+        }
+        showToastMessage("Salesman deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting winroom record:", error);
+        showToastMessage("Error deleting salesman. Please try again.");
+      }
+    }
   };
 
   return (
-    <Container maxWidth="lg" className="p-4">
-      <Typography variant="h4" className="text-center my-8 font-bold">
-        Win Room Board
-      </Typography>
+    <Container>
+      {/* Salesmen Dropdown */}
+      <div className="mt-4 mb-6 flex items-center space-x-4">
+        <div className="relative inline-block text-left">
+          <button
+            onClick={toggleDropdown}
+            className="inline-flex justify-between w-56 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+          >
+            {winroomId === "new"
+              ? "New Salesman"
+              : winroomList.find((w) => w.id === winroomId)?.name ||
+                "Select Salesman"}
+            <svg
+              className="ml-2 h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+              <div className="py-1">
+                <div
+                  onClick={() => handleWinroomSelectChange("new")}
+                  className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  New Salesman
+                </div>
+                {winroomList.map((w) => (
+                  <div
+                    key={w.id}
+                    onClick={() => handleWinroomSelectChange(w.id)}
+                    className="cursor-pointer px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    {w.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <Button
+          variant="contained"
+          onClick={handleSaveWinroom}
+          sx={{
+            bgcolor: "indigo.600",
+            "&:hover": { bgcolor: "indigo.700" },
+            px: 2,
+            py: 1,
+            borderRadius: "8px",
+            fontSize: "0.875rem",
+          }}
+        >
+          Save WinRoom
+        </Button>
+        {winroomId !== "new" && (
+          <Button
+            variant="contained"
+            onClick={() => setShowDeleteConfirm(true)}
+            sx={{
+              ml: 2,
+              bgcolor: "transparent",
+              border: "1px solid red",
+              color: "red",
+              "&:hover": { bgcolor: "red", color: "white" },
+              px: 2,
+              py: 1,
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+            }}
+          >
+            Delete WinRoom
+          </Button>
+        )}
+      </div>
+
+      {/* Winroom Reviews Section */}
       <Grid container spacing={6}>
         {reviews.map((review, index) => (
           <Grid item xs={12} key={index}>
@@ -251,7 +489,6 @@ const WinRoomPage: React.FC = () => {
                 <Typography variant="h5" className="mb-4 font-semibold">
                   Review {index + 1}
                 </Typography>
-
                 <Grid container spacing={4}>
                   {/* Basic Info */}
                   <Grid item xs={12}>
@@ -348,7 +585,6 @@ const WinRoomPage: React.FC = () => {
                     <Typography variant="h6" className="mb-2 font-semibold">
                       ROWERS Analysis
                     </Typography>
-                    {/* The row of clickable letters */}
                     <div className="flex space-x-4 justify-center mb-4">
                       {rowersData.map((rower, rowerIndex) => (
                         <div
@@ -368,7 +604,6 @@ const WinRoomPage: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    {/* The bar chart */}
                     <MiniRowersChart values={review.rowersValues} />
                   </Grid>
 
@@ -378,7 +613,6 @@ const WinRoomPage: React.FC = () => {
                       Activity
                     </Typography>
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                      {/* Activity Description */}
                       <TextField
                         label="Activity Description"
                         variant="outlined"
@@ -392,7 +626,6 @@ const WinRoomPage: React.FC = () => {
                         }
                         className="bg-white flex-1"
                       />
-                      {/* Deadline */}
                       <TextField
                         label="Deadline"
                         type="date"
@@ -408,11 +641,10 @@ const WinRoomPage: React.FC = () => {
                         InputLabelProps={{ shrink: true }}
                         className="bg-white w-44"
                       />
-                      {/* Add Button */}
                       <Button
                         variant="contained"
                         onClick={() => handleAddActivity(index)}
-                        className="bg-[#6200ea] hover:bg-[#4b00b5] text-white px-4 py-2"
+                        className="bg-[#6200ea] hover:bg-[#4b00b5] text-white px-4 py-2 rounded-md"
                       >
                         Add
                       </Button>
@@ -424,7 +656,6 @@ const WinRoomPage: React.FC = () => {
                             key={actIndex}
                             className="flex items-center py-1"
                           >
-                            {/* Description (left), deadline (right), delete button */}
                             <span className="flex-1">
                               {activity.description}
                             </span>
@@ -452,16 +683,20 @@ const WinRoomPage: React.FC = () => {
         ))}
       </Grid>
 
-      {/* Modal for ROWERS Value Selection (no fade transition) */}
+      {/* Toast Popup */}
+      {showToast && (
+        <div className="fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg transition-opacity duration-300">
+          {toastMessage}
+        </div>
+      )}
+
+      {/* Modal for ROWERS Value Selection */}
       <Modal
         open={rowersModalOpen}
         onClose={closeRowersModal}
         BackdropComponent={Backdrop}
-        BackdropProps={{
-          sx: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
-        }}
+        BackdropProps={{ sx: { backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
       >
-        {/* White Paper container in the center */}
         <Paper
           sx={{
             position: "absolute",
@@ -478,7 +713,6 @@ const WinRoomPage: React.FC = () => {
         >
           {selectedRowerIndex !== null && (
             <>
-              {/* Letter + Title */}
               <Typography
                 variant="h2"
                 sx={{
@@ -495,10 +729,7 @@ const WinRoomPage: React.FC = () => {
               <Typography variant="body1" sx={{ mb: 4 }}>
                 {rowersData[selectedRowerIndex].description}
               </Typography>
-
               <Divider sx={{ my: 2 }} />
-
-              {/* Select Value */}
               <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
                 Select Value
               </Typography>
@@ -513,10 +744,7 @@ const WinRoomPage: React.FC = () => {
                   </Button>
                 ))}
               </div>
-
               <Divider sx={{ my: 2 }} />
-
-              {/* Guidelines */}
               <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
                 Guidelines
               </Typography>
@@ -529,6 +757,69 @@ const WinRoomPage: React.FC = () => {
           )}
         </Paper>
       </Modal>
+
+      {/* Modal for New Salesman Name */}
+      {showNameModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          {/* Tinted overlay */}
+          <div className="absolute inset-0 bg-gray-200 opacity-30"></div>
+          <div className="relative bg-white p-8 rounded-lg shadow-lg w-1/3 border border-gray-300">
+            <h3 className="text-xl font-semibold mb-4">Enter Salesman Name</h3>
+            <input
+              type="text"
+              value={newWinroomName}
+              onChange={(e) => setNewWinroomName(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-indigo-600"
+              placeholder="Salesman Name"
+            />
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={() => {
+                  setShowNameModal(false);
+                  setNewWinroomName("");
+                }}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleModalSave}
+                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+      >
+        <DialogTitle>Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this salesman record?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowDeleteConfirm(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              setShowDeleteConfirm(false);
+              handleDeleteWinroom();
+            }}
+            color="error"
+            autoFocus
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
