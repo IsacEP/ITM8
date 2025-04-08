@@ -149,5 +149,5 @@ REST_FRAMEWORK = {
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend_build', 'dist'),
+    os.path.join(BASE_DIR, 'backend', 'frontend_build', 'dist'),
 ]
