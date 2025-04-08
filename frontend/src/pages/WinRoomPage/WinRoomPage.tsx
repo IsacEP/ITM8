@@ -63,6 +63,8 @@ const defaultReview: Review = {
   activities: [],
 };
 
+console.log(defaultReview);
+
 // ROWERS data (for the modal)
 const rowersData = [
   {

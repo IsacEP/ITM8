@@ -15,6 +15,9 @@ from .models import WinroomData
 from .serializers import WinroomDataSerializer
 from .models import StakeholderData
 from .serializers import StakeholderDataSerializer
+from django.conf import settings
+from django.http import HttpResponse, Http404
+import os
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -100,5 +103,13 @@ class SalesDataList(APIView):
         serializer = SalesDataSerializer(sales_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+def index(request):
+    index_path = os.path.join(settings.BASE_DIR, 'frontend_build', 'index.html')
+    try:
+        with open(index_path, encoding='utf-8') as f:
+            return HttpResponse(f.read())
+    except FileNotFoundError:
+        raise Http404("Index file not found")
+    
 def home(request):
     return render(request, 'home.html')

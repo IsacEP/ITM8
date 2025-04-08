@@ -1,6 +1,5 @@
 import React from "react";
-import StakeholderScatterChart from "../../components/StakeHolder/StakeholderScatterChart";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import "./StakeHolderPage.css";
 
 const StakeHolderPage: React.FC = () => {

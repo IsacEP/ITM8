@@ -19,6 +19,7 @@ const RegisterPage: React.FC = () => {
         { username, password },
         { headers: { "Content-Type": "application/json" } }
       );
+      console.log(response.data);
       setSnackbarOpen(true);
     } catch (error) {
       console.error("Registration error:", error);

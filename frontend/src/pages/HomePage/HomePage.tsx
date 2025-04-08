@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
-import PageLayout from "../../components/Layout/PageLayout";
 import ToolCard from "../../components/ToolCard";
 import "./HomePage.css";
 
