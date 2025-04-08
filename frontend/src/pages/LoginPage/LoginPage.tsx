@@ -11,8 +11,9 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    const success = login(username, password);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await login(username, password);
     if (success) {
       navigate("/");
     } else {
@@ -59,6 +60,15 @@ const LoginPage: React.FC = () => {
           sx={{ marginTop: 2 }}
         >
           Login
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="secondary"
+          onClick={() => navigate("/register")}
+          sx={{ marginTop: 2 }}
+        >
+          Register
         </Button>
       </Box>
     </Container>

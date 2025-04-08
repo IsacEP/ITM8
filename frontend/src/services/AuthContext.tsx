@@ -1,8 +1,9 @@
 import React, { createContext, useState, useContext } from "react";
+import axios from "axios";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -11,36 +12,31 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!localStorage.getItem("token")
+  );
 
-  const login = (username: string, password: string): boolean => {
-    const envUsers = [
-      {
-        username: import.meta.env.VITE_USER1,
-        password: import.meta.env.VITE_PASS1,
-      },
-      {
-        username: import.meta.env.VITE_USER2,
-        password: import.meta.env.VITE_PASS2,
-      },
-      {
-        username: import.meta.env.VITE_USER3,
-        password: import.meta.env.VITE_PASS3,
-      },
-    ];
-
-    const validUser = envUsers.find(
-      (user) => user.username === username && user.password === password
-    );
-
-    if (validUser) {
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/login/",
+        { username, password },
+        { headers: { "Content-Type": "application/json" } }
+      );
+      localStorage.setItem("token", response.data.token);
       setIsAuthenticated(true);
       return true;
+    } catch (error) {
+      console.error("Login error", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
+    localStorage.removeItem("token");
     setIsAuthenticated(false);
   };
 

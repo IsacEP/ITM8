@@ -54,22 +54,24 @@ const HomePage: React.FC = () => {
       description:
         "Design and analyze flow charts to outline and optimize workflows for improved efficiency.",
     },
+    {
+      title: "Sales Funnel Analysis",
+      path: "/SalesFunnelAnalysis",
+      description:
+        "Analyze your sales funnel to identify bottlenecks and optimize conversion rates.",
+    },
   ];
 
   return (
-    <PageLayout title="Home Page">
-      {/* HERO SECTION */}
+    <>
       <Container maxWidth={false} disableGutters>
-        <div className="hero-fade-out relative ">
-          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-24 px-4 rounded-lg">
-            <div className="max-w-7xl mx-auto pl-8">
+        <div className="hero-fade-out relative">
+          <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-24 px-4">
+            <div className="max-w-7xl mx-auto text-center">
               <Typography variant="h3" className="font-bold mb-4">
                 Sales Opportunity Analyzer
               </Typography>
-              <Typography
-                variant="h6"
-                className="mb-6 max-w-2xl leading-relaxed"
-              >
+              <Typography variant="h6" className="mb-6">
                 Analyze, plan, and optimize your sales strategies in one place.
               </Typography>
             </div>
@@ -89,7 +91,7 @@ const HomePage: React.FC = () => {
           </div>
         </Container>
       </div>
-    </PageLayout>
+    </>
   );
 };
 

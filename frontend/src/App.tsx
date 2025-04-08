@@ -12,9 +12,11 @@ import WinRoomPage from "./pages/WinRoomPage/WinRoomPage";
 import CanvasPage from "./pages/CanvasPage/CanvasPage";
 import StakeHolderPage from "./pages/StakeHolderPage/StakeHolderPage";
 import FlowPage from "./pages/FlowPage/Flow";
+import SalesFunnelAnalysis from "./pages/SalesFunnelAnalysis/SalesFunnelAnalysis";
 import InformationPage from "./pages/InformationPage/InformationPage";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import RegisterPage from "./pages/RegisterPage/RegisterPage";
 
 // Theme for the Rowers page (if needed)
 const Rowertheme = createTheme({
@@ -46,10 +48,8 @@ const App: React.FC = () => {
       <Router basename="/ITM8">
         <Header />
         <Routes>
-          {/* Login Route (Public) */}
           <Route path="/login" element={<LoginPage />} />
-
-          {/* Private Routes */}
+          <Route path="/register" element={<RegisterPage />} />
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/PipelinePage" element={<PipelinePage />} />
@@ -67,6 +67,10 @@ const App: React.FC = () => {
             <Route path="/CanvasPage" element={<CanvasPage />} />
             <Route path="/FlowPage" element={<FlowPage />} />
             <Route path="/StakeholderPage" element={<StakeHolderPage />} />
+            <Route
+              path="/SalesFunnelAnalysis"
+              element={<SalesFunnelAnalysis />}
+            />
             <Route path="/information" element={<InformationPage />} />
           </Route>
         </Routes>
